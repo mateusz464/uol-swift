@@ -1,0 +1,12 @@
+{
+  "data" : [
+    {
+      "filename" : "Classic Books.json",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
