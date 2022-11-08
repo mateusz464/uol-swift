@@ -37,17 +37,30 @@ extension String {
 
 class ViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout{
     
-    var wordResult: (word: String, length: Int) = ("", 0)
-    var publicWord: String = ""
+    var wordResult: (word: String, length: Int, genre: String) = ("", 0, "")
     var wrongTries = 0
     var letterArr = [String]()
-    
+    var uniqueLetters = 0
+    var score = 0
+    var reward = 0
+        
     @IBOutlet weak var theTableView: UICollectionView!
     
     @IBOutlet weak var letterField: UITextField!
     
     @IBOutlet weak var wrongGuessLabel: UILabel!
     
+    @IBOutlet weak var wonLabel: UILabel!
+    
+    @IBOutlet weak var enterLetterBtn: UIButton!
+        
+    @IBOutlet weak var catLabel: UILabel!
+    
+    @IBOutlet weak var noMatchesLabel: UILabel!
+    
+    @IBOutlet weak var rewardTextLabel: UILabel!
+    
+    @IBOutlet weak var rewardScoreLabel: UILabel!
     
     func getFilesInBundleFolder(named fileOrFolderName:String,withExt: String) -> [URL] {
         var fileURLs = [URL]() //the retrieved file-based URLs will be placed here
@@ -91,38 +104,73 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         return (theGamePhrases,theGameGenre) //tuple composed of Array of phrase Strings and genre
     }
     
-    func getWord() -> (String, Int) {
+    func getWord() -> (String, Int, String) {
         let wordsTuple: (phrases: [String], genre: String) = getJSONDataIntoArray()
         let arrLength = wordsTuple.phrases.count
         let randomNum = Int.random(in: 0..<arrLength)
         let chosenWord = wordsTuple.phrases[randomNum]
         let wordLength = chosenWord.count
-        return (chosenWord, wordLength)
+        return (chosenWord, wordLength, wordsTuple.genre)
+    }
+    
+    func getUniqueCharacters(from string: String) -> String {
+        var uniqueString = ""
+        for character in string {
+            if uniqueString.uppercased().contains(character.uppercased()) == false {
+                if character.isLetter {
+                    uniqueString += String(describing: character)
+                }
+            }
+        }
+        return uniqueString
+    }
+    
+    func getScore(letter: String) -> (Int){
+        let str = wordResult.0.lowercased().filter { $0 == Character(String(letter).lowercased())}
+        let tempScore = str.count * reward
+        return tempScore
     }
     
     func checkForLetter(letter: String){
         if ((wordResult.0.contains(letter)) || (wordResult.0.contains(letter.lowercased()))){
-            letterArr.append(letter)
-//            publicWord = publicWord.replacingOccurrences(of: "-", with: letter, options: .literal, range: nil)
-//            for i in 0...wordResult.1-1{
-//
-//                if (letter == wordResult.0[i]){
-//                    let lowerIndex = publicWord.index(publicWord.startIndex, offsetBy: i)
-//                    let higherIndex = publicWord.index(publicWord.startIndex, offsetBy: i+1)
-//                    publicWord.replaceSubrange(lowerIndex..<higherIndex, with: letter)
-//                }
-//            }
+            
+            if (letterArr.contains(letter)){
+                
+            } else {
+                letterArr.append(letter)
+                score += getScore(letter: letter)
+            }
         } else {
             wrongTries += 1
             wrongGuessLabel.text = String(wrongTries)
+            
+            if (wrongTries == 10){
+                wonLabel.text = "You lost, better luck next time!"
+                wonLabel.isHidden = false
+                return
+            }
         }
     }
     
     @IBAction func enterBtn(_ sender: Any) {
+        catLabel.text = catLabel.text! + " " + wordResult.2
+        let scoreArr = [1,2,5,10,20]
+        reward = scoreArr[Int.random(in: 0..<5)]
+        
+        rewardScoreLabel.text = String(reward)
+        
         theTableView.isHidden = false
+        letterField.isHidden = false
+        wrongGuessLabel.isHidden = false
+        enterLetterBtn.isHidden = false
+        catLabel.isHidden = false
+        noMatchesLabel.isHidden = false
+        rewardTextLabel.isHidden = false
+        rewardScoreLabel.isHidden = false
     }
     
     @IBAction func enterLetterBtn(_ sender: Any) {
+        
         letterField.resignFirstResponder()
         let guess = letterField.text
         var letter = ""
@@ -133,11 +181,14 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             letterField.placeholder = "Enter one letter"
         } else {
             letter = (guess?.uppercased())!
-            print("LETTER= " + letter)
             checkForLetter(letter: letter)
-//            print("PUBLIC WORD= " + publicWord)
-            print(letterArr)
             theTableView.reloadData()
+        }
+        
+        if (letterArr.count == uniqueLetters){
+            wonLabel.text = wonLabel.text! + " " + String(score) + "!"
+            wonLabel.isHidden = false
+            return
         }
         
     }
@@ -145,27 +196,11 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 56;
-//        return wordResult.1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let aCell = collectionView.dequeueReusableCell(withReuseIdentifier: "myCell", for: indexPath) as! customCell
-          
-//        ACTUAL WORD
-//        if (indexPath.row < wordResult.1){
-//            let word = wordResult.0
-//            let num: Int = indexPath.row
-//            let index = word.index(word.startIndex, offsetBy: num)
-//            aCell.letterImage.image = UIImage(named: String(word[index]).uppercased())
-//        }
-        
-//        JUST DISPLAY WORD
-//        if (indexPath.row < wordResult.1){
-//            let num: Int = indexPath.row
-//            let index = publicWord.index(publicWord.startIndex, offsetBy: num)
-//            aCell.letterImage.image = UIImage(named: String(publicWord[index].uppercased()))
-//        }
         
 //        DISPLAY ONLY IF IN ARR
         if (indexPath.row < wordResult.1){
@@ -207,13 +242,9 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         super.viewDidLoad()
         theTableView.isHidden = true
         wordResult = getWord()
-        
-        for _ in 1...wordResult.1 {
-            publicWord += "-"
-        }
+        uniqueLetters = getUniqueCharacters(from: wordResult.0).count
         
         print(wordResult.0)
-        print(publicWord)
         
     }
 
