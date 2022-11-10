@@ -1,8 +1,8 @@
 //
-//  ViewController.swift
-//  Wheel of Fortune
+//  GameViewController.swift
+//  WheelOfFortune
 //
-//  Created by Mateusz Golebiowski on 25/10/2022.
+//  Created by Mateusz Golebiowski on 09/11/2022.
 //
 
 import UIKit
@@ -35,7 +35,7 @@ extension String {
     }
 }
 
-class ViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout{
+class GameViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     var wordResult: (word: String, length: Int, genre: String) = ("", 0, "")
     var wrongTries = 0
@@ -43,24 +43,20 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     var uniqueLetters = 0
     var score = 0
     var reward = 0
+    var hasWon = false
     
-    @IBOutlet weak var theTableView: UICollectionView!
+    @IBOutlet weak var tableView: UICollectionView!
+    
+    @IBOutlet weak var categoryLabel: UILabel!
+    
+    @IBOutlet weak var noMatchesNumLabel: UILabel!
     
     @IBOutlet weak var letterField: UITextField!
     
-    @IBOutlet weak var wrongGuessLabel: UILabel!
-    
-    @IBOutlet weak var wonLabel: UILabel!
-    
-    @IBOutlet weak var enterLetterBtn: UIButton!
-        
-    @IBOutlet weak var catLabel: UILabel!
-    
-    @IBOutlet weak var noMatchesLabel: UILabel!
-    
-    @IBOutlet weak var rewardTextLabel: UILabel!
-    
     @IBOutlet weak var rewardScoreLabel: UILabel!
+    
+    @IBOutlet weak var usedLettersLabel: UILabel!
+    
     
     func getFilesInBundleFolder(named fileOrFolderName:String,withExt: String) -> [URL] {
         var fileURLs = [URL]() //the retrieved file-based URLs will be placed here
@@ -104,6 +100,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         return (theGamePhrases,theGameGenre) //tuple composed of Array of phrase Strings and genre
     }
     
+//    Creates a word tuple from calling the getJSONDataIntoArray method and then gets a random word from that tuple. It then creates a new tuple with the chosen word, the length of the word (count) and then the genre of the word.
     func getWord() -> (String, Int, String) {
         let wordsTuple: (phrases: [String], genre: String) = getJSONDataIntoArray()
         let arrLength = wordsTuple.phrases.count
@@ -113,6 +110,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         return (chosenWord, wordLength, wordsTuple.genre)
     }
     
+//    For every character in a string it checks if the char is in uniqueString. If it is not then it is added there and if one already is then it is not added. This gets a string of unique characters in the string.
     func getUniqueCharacters(from string: String) -> String {
         var uniqueString = ""
         for character in string {
@@ -125,6 +123,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         return uniqueString
     }
     
+//    Calculates the score from the letter provided. The more duplicates of the letter the higher the score.
     func getScore(letter: String) -> (Int){
         let str = wordResult.0.lowercased().filter { $0 == Character(String(letter).lowercased())}
         let tempScore = str.count * reward
@@ -132,45 +131,40 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     }
     
     func checkForLetter(letter: String){
+//        If the word, either higher or lowercase, is in the word then add it to the array and calculate score.
         if ((wordResult.0.contains(letter)) || (wordResult.0.contains(letter.lowercased()))){
             
             if (letterArr.contains(letter)){
-                
+//                do nothing
+                return
             } else {
                 letterArr.append(letter)
                 score += getScore(letter: letter)
             }
-        } else {
-            wrongTries += 1
-            wrongGuessLabel.text = String(wrongTries)
             
+//            add the letters to the used letters label
+            usedLettersLabel.text = usedLettersLabel.text! + letter + ", "
+            
+        } else {
+            
+//              Increment wrongTries and update it on the label
+            if (!usedLettersLabel.text!.contains(letter)){
+                usedLettersLabel.text = usedLettersLabel.text! + letter + ", "
+                
+                wrongTries += 1
+                noMatchesNumLabel.text = String(wrongTries)
+            }
+
+//            if the user had 10 wrong tries then it ends the game
             if (wrongTries == 10){
-                wonLabel.text = "You lost, better luck next time!"
-                wonLabel.isHidden = false
+                performSegue(withIdentifier: "gameOverSegue", sender: self)
                 return
             }
         }
     }
     
-    @IBAction func enterBtn(_ sender: Any) {
-        catLabel.text = catLabel.text! + " " + wordResult.2
-        let scoreArr = [1,2,5,10,20]
-        reward = scoreArr[Int.random(in: 0..<5)]
-        
-        rewardScoreLabel.text = String(reward)
-        
-        theTableView.isHidden = false
-        letterField.isHidden = false
-        wrongGuessLabel.isHidden = false
-        enterLetterBtn.isHidden = false
-        catLabel.isHidden = false
-        noMatchesLabel.isHidden = false
-        rewardTextLabel.isHidden = false
-        rewardScoreLabel.isHidden = false
-    }
     
     @IBAction func enterLetterBtn(_ sender: Any) {
-        
         letterField.resignFirstResponder()
         let guess = letterField.text
         var letter = ""
@@ -182,20 +176,24 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         } else {
             letter = (guess?.uppercased())!
             checkForLetter(letter: letter)
-            theTableView.reloadData()
+            tableView.reloadData()
         }
         
         if (letterArr.count == uniqueLetters){
-            wonLabel.text = wonLabel.text! + " " + String(score) + "!"
-            wonLabel.isHidden = false
+            hasWon = true
+            performSegue(withIdentifier: "gameOverSegue", sender: self)
             return
         }
-        
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let goVC = segue.destination as! GameOverViewController
+        goVC.finalScore = score
+        goVC.hasWon = hasWon
+    }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 56;
+        return 56
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -206,10 +204,13 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         if (indexPath.row < wordResult.1){
             let num: Int = indexPath.row
             let letter = wordResult.0[num].uppercased()
+            
             if (letterArr.contains(letter)){
                 aCell.letterImage.image = UIImage(named: letter.uppercased())
-            } else {
+            } else if (letter.contains(" ")) {
                 aCell.letterImage.image = UIImage(named: "-")
+            } else {
+                aCell.letterImage.image = UIImage(named: "+")
             }
         } else {
             aCell.letterImage.image = nil
@@ -240,12 +241,16 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        theTableView.isHidden = true
         wordResult = getWord()
         uniqueLetters = getUniqueCharacters(from: wordResult.0).count
+        
+        categoryLabel.text = categoryLabel.text! + " " + wordResult.2
+        let scoreArr = [1,2,5,10,20]
+        reward = scoreArr[Int.random(in: 0..<5)]
+        rewardScoreLabel.text! += String(reward)
         
         print(wordResult.0)
         
     }
-
+    
 }
