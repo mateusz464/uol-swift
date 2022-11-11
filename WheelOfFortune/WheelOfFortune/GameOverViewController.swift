@@ -13,6 +13,7 @@ class GameOverViewController: UIViewController {
     
     let titleText = "Better luck next time"
     let lossText = "You lost!"
+    var username = ""
     
     var finalScore = 0
 
@@ -22,6 +23,36 @@ class GameOverViewController: UIViewController {
     
     @IBOutlet weak var winLossLabel: UILabel!
     
+    @IBOutlet weak var nameField: UITextField!
+    
+    @IBAction func submitBtn(_ sender: Any) {
+        username = nameField.text ?? "Anonymous"
+        
+        let userDefaults = UserDefaults.standard
+        
+        var nameArr = [String]()
+        var scoreArr = [Int]()
+        
+        let data = userDefaults.object(forKey: "nameArray")
+        
+        if (data == nil){
+            nameArr.append(username)
+            scoreArr.append(finalScore)
+            
+            userDefaults.set(nameArr, forKey: "nameArray")
+            userDefaults.set(scoreArr, forKey: "scoreArray")
+            
+        } else {
+            var names = userDefaults.object(forKey: "nameArray") as? [String]
+            names?.append(username)
+            var scores = userDefaults.object(forKey: "scoreArray") as? [Int]
+            scores?.append(finalScore)
+            
+            userDefaults.set(names, forKey: "nameArray")
+            userDefaults.set(scores, forKey: "scoreArray")
+        }
+        
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
