@@ -7,8 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		613DE79D291BCB660087179F /* JSONdatafiles in Resources */ = {isa = PBXBuildFile; fileRef = 613DE79C291BCB660087179F /* JSONdatafiles */; };
 		613DE79F291D4C490087179F /* GameOverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613DE79E291D4C490087179F /* GameOverViewController.swift */; };
+		61855290291FDEFC0086427E /* JSONdatafiles in Resources */ = {isa = PBXBuildFile; fileRef = 6185528F291FDEFC0086427E /* JSONdatafiles */; };
+		61E67DBE291EA6190060EEA3 /* HighScoreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61E67DBD291EA6190060EEA3 /* HighScoreViewController.swift */; };
 		61EBD683291BC4B1000E202C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61EBD682291BC4B1000E202C /* AppDelegate.swift */; };
 		61EBD685291BC4B1000E202C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61EBD684291BC4B1000E202C /* SceneDelegate.swift */; };
 		61EBD687291BC4B1000E202C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61EBD686291BC4B1000E202C /* ViewController.swift */; };
@@ -20,8 +21,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		613DE79C291BCB660087179F /* JSONdatafiles */ = {isa = PBXFileReference; lastKnownFileType = folder; name = JSONdatafiles; path = ../../../../Downloads/JSONdatafiles; sourceTree = "<group>"; };
 		613DE79E291D4C490087179F /* GameOverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOverViewController.swift; sourceTree = "<group>"; };
+		6185528F291FDEFC0086427E /* JSONdatafiles */ = {isa = PBXFileReference; lastKnownFileType = folder; path = JSONdatafiles; sourceTree = "<group>"; };
+		61E67DBD291EA6190060EEA3 /* HighScoreViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HighScoreViewController.swift; sourceTree = "<group>"; };
 		61EBD67F291BC4B1000E202C /* WheelOfFortune.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WheelOfFortune.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		61EBD682291BC4B1000E202C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		61EBD684291BC4B1000E202C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -68,13 +70,14 @@
 				61EBD684291BC4B1000E202C /* SceneDelegate.swift */,
 				61EBD686291BC4B1000E202C /* ViewController.swift */,
 				61EBD688291BC4B1000E202C /* Main.storyboard */,
+				61E67DBD291EA6190060EEA3 /* HighScoreViewController.swift */,
 				613DE79E291D4C490087179F /* GameOverViewController.swift */,
 				61EBD698291BC72F000E202C /* CustomCell.swift */,
 				61EBD68B291BC4B2000E202C /* Assets.xcassets */,
 				61EBD68D291BC4B2000E202C /* LaunchScreen.storyboard */,
 				61EBD690291BC4B2000E202C /* Info.plist */,
 				61EBD696291BC4D8000E202C /* GameViewController.swift */,
-				613DE79C291BCB660087179F /* JSONdatafiles */,
+				6185528F291FDEFC0086427E /* JSONdatafiles */,
 			);
 			path = WheelOfFortune;
 			sourceTree = "<group>";
@@ -137,7 +140,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				613DE79D291BCB660087179F /* JSONdatafiles in Resources */,
+				61855290291FDEFC0086427E /* JSONdatafiles in Resources */,
 				61EBD68F291BC4B2000E202C /* LaunchScreen.storyboard in Resources */,
 				61EBD68C291BC4B2000E202C /* Assets.xcassets in Resources */,
 				61EBD68A291BC4B1000E202C /* Main.storyboard in Resources */,
@@ -152,6 +155,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				61EBD697291BC4D8000E202C /* GameViewController.swift in Sources */,
+				61E67DBE291EA6190060EEA3 /* HighScoreViewController.swift in Sources */,
 				61EBD687291BC4B1000E202C /* ViewController.swift in Sources */,
 				613DE79F291D4C490087179F /* GameOverViewController.swift in Sources */,
 				61EBD699291BC72F000E202C /* CustomCell.swift in Sources */,

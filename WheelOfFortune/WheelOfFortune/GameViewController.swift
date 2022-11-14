@@ -44,7 +44,10 @@ class GameViewController: UIViewController, UICollectionViewDataSource, UICollec
     var score = 0
     var reward = 0
     var hasWon = false
-    
+    var startIndexes = [Int]()
+    var endIndexes = [Int]()
+    var fullIndex = [Int]()
+
     @IBOutlet weak var tableView: UICollectionView!
     
     @IBOutlet weak var categoryLabel: UILabel!
@@ -100,14 +103,42 @@ class GameViewController: UIViewController, UICollectionViewDataSource, UICollec
         return (theGamePhrases,theGameGenre) //tuple composed of Array of phrase Strings and genre
     }
     
+//    func getRandomNum(num: Int) throws -> Int {
+//
+//        enum RandomNumError: Error {
+//                case emptyNum
+//        }
+//
+//        let randomNum = Int.random(in: 0..<num)
+//
+//
+//        guard num != 0 else {
+//            throw RandomNumError.emptyNum
+//        }
+//
+//        return randomNum
+//    }
+    
 //    Creates a word tuple from calling the getJSONDataIntoArray method and then gets a random word from that tuple. It then creates a new tuple with the chosen word, the length of the word (count) and then the genre of the word.
     func getWord() -> (String, Int, String) {
+        
         let wordsTuple: (phrases: [String], genre: String) = getJSONDataIntoArray()
         let arrLength = wordsTuple.phrases.count
         let randomNum = Int.random(in: 0..<arrLength)
         let chosenWord = wordsTuple.phrases[randomNum]
         let wordLength = chosenWord.count
         return (chosenWord, wordLength, wordsTuple.genre)
+        
+//        do {
+//            let wordsTuple: (phrases: [String], genre: String) = getJSONDataIntoArray()
+//            let arrLength = wordsTuple.phrases.count
+//            let randomNum = try getRandomNum(num: arrLength)
+//            let chosenWord = wordsTuple.phrases[randomNum]
+//            let wordLength = chosenWord.count
+//            return (chosenWord, wordLength, wordsTuple.genre)
+//        } catch {
+//            return ("Interstellar", 12, "Classic Movies")
+//        }
     }
     
 //    For every character in a string it checks if the char is in uniqueString. If it is not then it is added there and if one already is then it is not added. This gets a string of unique characters in the string.
@@ -165,10 +196,14 @@ class GameViewController: UIViewController, UICollectionViewDataSource, UICollec
     
     
     @IBAction func enterLetterBtn(_ sender: Any) {
+//        Removes the keyboard from the screen
         letterField.resignFirstResponder()
         let guess = letterField.text
         var letter = ""
         
+//        If the guess is blank then the user will get told to enter a letter.
+//        If the user entered multiple characters they will be told to enter one letter.
+//        Else the letter is checked in the checkForLetter method and the table is reloaded.
         if (guess! == "") {
             letterField.placeholder = "Enter a letter"
         } else if (guess!.count > 1){
@@ -179,6 +214,7 @@ class GameViewController: UIViewController, UICollectionViewDataSource, UICollec
             tableView.reloadData()
         }
         
+//        If the uniqueLetters count is the same as the number of letters in the letterArray then the user has guessed the word and they have won.
         if (letterArr.count == uniqueLetters){
             hasWon = true
             performSegue(withIdentifier: "gameOverSegue", sender: self)
@@ -186,10 +222,81 @@ class GameViewController: UIViewController, UICollectionViewDataSource, UICollec
         }
     }
     
+//    Sends the required information to the GameOverViewController
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let goVC = segue.destination as! GameOverViewController
         goVC.finalScore = score
         goVC.hasWon = hasWon
+    }
+    
+    func getIndex() {
+        
+//        Split the words upon encountering a space.
+        let splitWord = wordResult.0.split(separator: " ")
+        let words = splitWord.count
+        var index = 0
+        let outOfBounds = [13, 27, 41, 55]
+        
+//        If there are more than 1 words then for each word in the array:
+//        If is i 0 then it will append the start index as 0 and add the length of the word
+//        Else, it will take the current index and add 2 to account for the space and then use that as the start
+//        it will then calculate if any of the characters in the string are out of bounds, if they are then the
+//        program will calculate where to position the string based off its current index.
+        if words > 1 {
+            for i in (0..<words) {
+                
+                if i == 0 {
+                    startIndexes.append(0)
+                    index += splitWord[0].count - 1
+                    endIndexes.append(index)
+                    
+                } else {
+                    
+                    let length = splitWord[i].count - 1
+                    let staticStart = index + 2
+                    let staticEnd = staticStart + length
+                    
+                    var start = index + 2
+                    var end = start + length
+                                        
+                    for j in (staticStart..<staticEnd){
+                        if outOfBounds.contains(j) {
+                            if j < 14 {
+                                start = 14
+                            } else if j >= 14 && j < 28 {
+                                start = 28
+                            } else if j >= 28 && j < 43 {
+                                start = 43
+                            }
+                        }
+                    }
+                    
+                    end = start + length
+                    
+                    index = end
+                    startIndexes.append(start)
+                    endIndexes.append(end)
+                    
+                }
+                
+            }
+        } else {
+//            If the title is only one single word then the start index and end index is appended instantly.
+            startIndexes.append(0)
+            endIndexes.append((0+splitWord[0].count-1))
+        }
+    }
+    
+    func getFullIndex() {
+//      Appends all the indexes of the word, is used when filling in the cells.
+        for i in (0..<startIndexes.count) {
+            let start = startIndexes[i]
+            let end = endIndexes[i]
+            
+            for j in (start..<end+1){
+                fullIndex.append(j)
+            }
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -199,22 +306,40 @@ class GameViewController: UIViewController, UICollectionViewDataSource, UICollec
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let aCell = collectionView.dequeueReusableCell(withReuseIdentifier: "myCell", for: indexPath) as! customCell
+//        IF NOTHING = "="
+//        IF SPACE = "="
+//        IF WORD = "-"
+//        IF GUESSED = LETTER
         
-//        DISPLAY ONLY IF IN ARR
-        if (indexPath.row < wordResult.1){
-            let num: Int = indexPath.row
-            let letter = wordResult.0[num].uppercased()
-            
-            if (letterArr.contains(letter)){
-                aCell.letterImage.image = UIImage(named: letter.uppercased())
-            } else if (letter.contains(" ")) {
-                aCell.letterImage.image = UIImage(named: "-")
-            } else {
-                aCell.letterImage.image = UIImage(named: "+")
-            }
+//        IF in fullindex == WORD
+        
+        let num: Int = indexPath.row
+        let letter = wordResult.0[num].uppercased()
+        
+        if (fullIndex.contains(indexPath.row) && letterArr.contains(letter)) {
+            aCell.letterImage.image = UIImage(named: letter.uppercased())
+        } else if (fullIndex.contains(indexPath.row) && !letterArr.contains(letter)) {
+            aCell.letterImage.image = UIImage(named: "-")
+        } else if (letter.contains(" ")) {
+            aCell.letterImage.image = UIImage(named: "=")
         } else {
-            aCell.letterImage.image = nil
+            aCell.letterImage.image = UIImage(named: "=")
         }
+        
+//        if (indexPath.row < wordResult.1){
+//            let num: Int = indexPath.row
+//            let letter = wordResult.0[num].uppercased()
+//
+//            if (letterArr.contains(letter)){
+//                aCell.letterImage.image = UIImage(named: letter.uppercased())
+//            } else if (letter.contains(" ")) {
+//                aCell.letterImage.image = UIImage(named: "-")
+//            } else {
+//                aCell.letterImage.image = UIImage(named: "+")
+//            }
+//        } else {
+//            aCell.letterImage.image = nil
+//        }
      
 //        HIDES THE EDGES
         
@@ -235,6 +360,7 @@ class GameViewController: UIViewController, UICollectionViewDataSource, UICollec
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+//        Sets the size of the cell
         let size = CGSize(width: 24, height: 30)
         return size
     }
@@ -248,8 +374,11 @@ class GameViewController: UIViewController, UICollectionViewDataSource, UICollec
         let scoreArr = [1,2,5,10,20]
         reward = scoreArr[Int.random(in: 0..<5)]
         rewardScoreLabel.text! += String(reward)
+        getIndex()
+        getFullIndex()
         
         print(wordResult.0)
+        
         
     }
     
