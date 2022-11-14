@@ -146,7 +146,6 @@ class GameViewController: UIViewController, UICollectionViewDataSource, UICollec
         let scoreArr = [1,2,5,10,20]
         reward = scoreArr[Int.random(in: 0..<5)]
         let newText = rewardScoreLabel.text!.replacingOccurrences(of: #"\b([0-9]|[1-9][0-9])\b"#, with: String(reward), options: .regularExpression, range: nil)
-        print(newText)
         rewardScoreLabel.text! = newText
     }
     
