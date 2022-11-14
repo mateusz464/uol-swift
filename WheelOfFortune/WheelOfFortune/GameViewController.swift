@@ -103,22 +103,6 @@ class GameViewController: UIViewController, UICollectionViewDataSource, UICollec
         return (theGamePhrases,theGameGenre) //tuple composed of Array of phrase Strings and genre
     }
     
-//    func getRandomNum(num: Int) throws -> Int {
-//
-//        enum RandomNumError: Error {
-//                case emptyNum
-//        }
-//
-//        let randomNum = Int.random(in: 0..<num)
-//
-//
-//        guard num != 0 else {
-//            throw RandomNumError.emptyNum
-//        }
-//
-//        return randomNum
-//    }
-    
 //    Creates a word tuple from calling the getJSONDataIntoArray method and then gets a random word from that tuple. It then creates a new tuple with the chosen word, the length of the word (count) and then the genre of the word.
     func getWord() -> (String, Int, String) {
         
@@ -128,17 +112,6 @@ class GameViewController: UIViewController, UICollectionViewDataSource, UICollec
         let chosenWord = wordsTuple.phrases[randomNum]
         let wordLength = chosenWord.count
         return (chosenWord, wordLength, wordsTuple.genre)
-        
-//        do {
-//            let wordsTuple: (phrases: [String], genre: String) = getJSONDataIntoArray()
-//            let arrLength = wordsTuple.phrases.count
-//            let randomNum = try getRandomNum(num: arrLength)
-//            let chosenWord = wordsTuple.phrases[randomNum]
-//            let wordLength = chosenWord.count
-//            return (chosenWord, wordLength, wordsTuple.genre)
-//        } catch {
-//            return ("Interstellar", 12, "Classic Movies")
-//        }
     }
     
 //    For every character in a string it checks if the char is in uniqueString. If it is not then it is added there and if one already is then it is not added. This gets a string of unique characters in the string.
@@ -161,6 +134,22 @@ class GameViewController: UIViewController, UICollectionViewDataSource, UICollec
         return tempScore
     }
     
+//    Runs this at the start of the game, sets the initial reward in the reward score label.
+    func getInitialReward(){
+        let scoreArr = [1,2,5,10,20]
+        reward = scoreArr[Int.random(in: 0..<5)]
+        rewardScoreLabel.text! += String(reward)
+    }
+    
+//    Runs everytime a user inputs a wrong letter. Re-calculates the score and updates it in the label.
+    func getReward() {
+        let scoreArr = [1,2,5,10,20]
+        reward = scoreArr[Int.random(in: 0..<5)]
+        let newText = rewardScoreLabel.text!.replacingOccurrences(of: #"\b([0-9]|[1-9][0-9])\b"#, with: String(reward), options: .regularExpression, range: nil)
+        print(newText)
+        rewardScoreLabel.text! = newText
+    }
+    
     func checkForLetter(letter: String){
 //        If the word, either higher or lowercase, is in the word then add it to the array and calculate score.
         if ((wordResult.0.contains(letter)) || (wordResult.0.contains(letter.lowercased()))){
@@ -178,11 +167,12 @@ class GameViewController: UIViewController, UICollectionViewDataSource, UICollec
             
         } else {
             
-//              Increment wrongTries and update it on the label
+//              Increment wrongTries and update it on the label. Also calls getReward to update the reward for a letter.
             if (!usedLettersLabel.text!.contains(letter)){
                 usedLettersLabel.text = usedLettersLabel.text! + letter + ", "
                 
                 wrongTries += 1
+                getReward()
                 noMatchesNumLabel.text = String(wrongTries)
             }
 
@@ -193,7 +183,6 @@ class GameViewController: UIViewController, UICollectionViewDataSource, UICollec
             }
         }
     }
-    
     
     @IBAction func enterLetterBtn(_ sender: Any) {
 //        Removes the keyboard from the screen
@@ -311,7 +300,7 @@ class GameViewController: UIViewController, UICollectionViewDataSource, UICollec
 //        IF WORD = "-"
 //        IF GUESSED = LETTER
         
-//        IF in fullindex == WORD
+//        IF in fullIndex = WORD
         
         let num: Int = indexPath.row
         let letter = wordResult.0[num].uppercased()
@@ -325,27 +314,6 @@ class GameViewController: UIViewController, UICollectionViewDataSource, UICollec
         } else {
             aCell.letterImage.image = UIImage(named: "=")
         }
-        
-//        if (indexPath.row < wordResult.1){
-//            let num: Int = indexPath.row
-//            let letter = wordResult.0[num].uppercased()
-//
-//            if (letterArr.contains(letter)){
-//                aCell.letterImage.image = UIImage(named: letter.uppercased())
-//            } else if (letter.contains(" ")) {
-//                aCell.letterImage.image = UIImage(named: "-")
-//            } else {
-//                aCell.letterImage.image = UIImage(named: "+")
-//            }
-//        } else {
-//            aCell.letterImage.image = nil
-//        }
-     
-//        HIDES THE EDGES
-        
-//        if ((indexPath.row == 0) || (indexPath.row == 13) || (indexPath.row == 42) || (indexPath.row == 55)) {
-//            aCell.contentView.isHidden = true
-//        }
 
         return aCell
     }
@@ -371,9 +339,7 @@ class GameViewController: UIViewController, UICollectionViewDataSource, UICollec
         uniqueLetters = getUniqueCharacters(from: wordResult.0).count
         
         categoryLabel.text = categoryLabel.text! + " " + wordResult.2
-        let scoreArr = [1,2,5,10,20]
-        reward = scoreArr[Int.random(in: 0..<5)]
-        rewardScoreLabel.text! += String(reward)
+        getInitialReward()
         getIndex()
         getFullIndex()
         
