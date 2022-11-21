@@ -3,6 +3,7 @@
     <device id="retina5_9" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <capability name="Map view configurations" minToolsVersion="14.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -15,14 +16,32 @@
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jgS-Z1-aRh">
+                                <rect key="frame" x="16" y="91" width="343" height="687"/>
+                                <hybridMapConfiguration key="preferredConfiguration"/>
+                                <connections>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="TLy-52-rgI"/>
+                                </connections>
+                            </mapView>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="jgS-Z1-aRh" secondAttribute="trailing" constant="16" id="9KN-2s-B7g"/>
+                            <constraint firstItem="jgS-Z1-aRh" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="KUX-mX-HKX"/>
+                            <constraint firstItem="jgS-Z1-aRh" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="NRh-De-oyM"/>
+                            <constraint firstItem="jgS-Z1-aRh" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="nZy-aG-83s"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Map" id="9Ws-sD-qm1"/>
+                    <connections>
+                        <outlet property="map" destination="jgS-Z1-aRh" id="evx-r6-rLK"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2596" y="4"/>
+            <point key="canvasLocation" x="2596" y="3.6945812807881775"/>
         </scene>
         <!--Places-->
         <scene sceneID="gpm-18-AKj">
@@ -54,6 +73,9 @@
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <connections>
+                        <outlet property="table" destination="hA7-Wi-skW" id="sgT-Bc-VfN"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uBd-xY-O6q" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

@@ -7,8 +7,13 @@
 
 import UIKit
 
-class PlacesViewController: UITableViewController {
+var places = [[String : String]()]
+var currentPlace = -1
 
+class PlacesViewController: UITableViewController {
+    
+    @IBOutlet var table: UITableView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -22,6 +27,7 @@ class PlacesViewController: UITableViewController {
     // MARK: - Table view data source
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        currentPlace = indexPath.row
         performSegue(withIdentifier: "toMap", sender: nil)
     }
 
@@ -32,16 +38,26 @@ class PlacesViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return 4
+        return places.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "myCell", for: indexPath)
         var content = UIListContentConfiguration.cell()
-        content.text = "Row \(indexPath.row)"
+        if places[indexPath.row]["name"] != nil {
+            content.text = places[indexPath.row]["name"]
+        }
         cell.contentConfiguration = content
-        
         return cell
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        if places.count == 1 && places[0].count == 0 {
+            places.remove(at: 0)
+            places.append(["name":"Ashton Building", "lat": "53.406566", "lon": "-2.966531"])
+        }
+        currentPlace = -1
+        table.reloadData()
     }
 
     /*
