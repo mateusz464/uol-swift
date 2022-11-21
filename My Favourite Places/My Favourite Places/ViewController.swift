@@ -42,6 +42,7 @@ class ViewController: UIViewController, MKMapViewDelegate {
                 annotation.title = title
                 self.map.addAnnotation(annotation)
                 places.append(["name":title, "lat": String(newCoordinate.latitude), "lon": String(newCoordinate.longitude)])
+                UserDefaults.standard.set(places, forKey: "storedPlaces")
             } )
         }
     }

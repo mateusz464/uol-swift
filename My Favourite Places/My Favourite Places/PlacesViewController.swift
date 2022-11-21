@@ -52,10 +52,17 @@ class PlacesViewController: UITableViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        let userDefaults = UserDefaults.standard
+        let data = userDefaults.object(forKey: "storedPlaces")
+        if (data != nil) {
+            places = data as! [[String : String]]
+        }
+        
         if places.count == 1 && places[0].count == 0 {
             places.remove(at: 0)
             places.append(["name":"Ashton Building", "lat": "53.406566", "lon": "-2.966531"])
         }
+        userDefaults.set(places, forKey: "storedPlaces")
         currentPlace = -1
         table.reloadData()
     }
