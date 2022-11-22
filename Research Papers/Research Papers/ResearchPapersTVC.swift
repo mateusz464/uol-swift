@@ -9,7 +9,13 @@ import UIKit
 
 class ResearchPapersTVC: UITableViewController {
     
+    var reports: technicalReports? = nil
+    
     @IBOutlet var theTable: UITableView!
+    
+    func updateTheTable() {
+        print(reports?.techreports2.count ?? 0)
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,6 +29,10 @@ class ResearchPapersTVC: UITableViewController {
             do {
                 let decoder = JSONDecoder()
                 let reportList = try decoder.decode(technicalReports.self, from: jsonData)
+                self.reports = reportList
+                DispatchQueue.main.async {
+                    self.updateTheTable()
+                }
                 var count = 0
                 for aReport in reportList.techreports2 {
                     count += 1
