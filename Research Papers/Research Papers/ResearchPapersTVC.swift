@@ -13,6 +13,26 @@ class ResearchPapersTVC: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        if let url = URL(string: "https://cgi.csc.liv.ac.uk/~phil/Teaching/COMP228/techreports/data.php?class=techreports2") {
+            let session = URLSession.shared
+            session.dataTask(with: url) { (data, response, err) in
+            guard let jsonData = data else {
+                return
+            }
+            do {
+                let decoder = JSONDecoder()
+                let reportList = try decoder.decode(technicalReports.self, from: jsonData)
+                var count = 0
+                for aReport in reportList.techreports2 {
+                    count += 1
+                    print("\(count) " + aReport.title) }
+                } catch let jsonErr {
+                    print("Error decoding JSON", jsonErr)
+                }
+            }.resume()
+                print("You are here!")
+        }
 
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
