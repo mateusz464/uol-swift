@@ -71,6 +71,15 @@ class PlacesViewController: UITableViewController {
         currentPlace = -1
         table.reloadData()
     }
+    
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        
+        if editingStyle == .delete {
+            places.remove(at: indexPath.row)
+            UserDefaults.standard.set(places, forKey: "storedPlaces")
+            tableView.deleteRows(at: [indexPath], with: .fade)
+        }
+    }
 
     /*
     // Override to support conditional editing of the table view.
