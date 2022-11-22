@@ -28,7 +28,12 @@ class PlacesViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         currentPlace = indexPath.row
-        performSegue(withIdentifier: "toMap", sender: nil)
+        performSegue(withIdentifier: "toMap", sender: self)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let vc = segue.destination as! ViewController
+        vc.isNew = true
     }
 
     override func numberOfSections(in tableView: UITableView) -> Int {

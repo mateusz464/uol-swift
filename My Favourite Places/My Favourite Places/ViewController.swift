@@ -10,6 +10,8 @@ import MapKit
 
 class ViewController: UIViewController, MKMapViewDelegate {
     
+    var isNew = false
+    
     @IBOutlet weak var map: MKMapView!
     
     @IBAction func longPress(_ sender: UILongPressGestureRecognizer) {
@@ -50,23 +52,32 @@ class ViewController: UIViewController, MKMapViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib
-        guard currentPlace != -1  else { return }
-        guard places.count > currentPlace else { return }
-        guard let name = places[currentPlace]["name"] else { return }
-        guard let lat = places[currentPlace]["lat"] else { return }
-        guard let lon = places[currentPlace]["lon"] else { return }
-        guard let latitude = Double(lat) else { return }
-        guard let longitude = Double(lon) else { return }
-        let span = MKCoordinateSpan(latitudeDelta: 0.008, longitudeDelta: 0.008)
-        let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-        let region = MKCoordinateRegion(center: coordinate, span: span)
-        self.map.setRegion(region, animated: true)
         
-        let annotation = MKPointAnnotation()
-        annotation.coordinate = coordinate
-        annotation.title = name
-        self.map.addAnnotation(annotation)
-        print(currentPlace)
+        if (isNew) {
+            let span = MKCoordinateSpan(latitudeDelta: 0.008, longitudeDelta: 0.008)
+            let coordinate = CLLocationCoordinate2D(latitude: 53.406566, longitude: -2.966531)
+            let region = MKCoordinateRegion(center: coordinate, span: span)
+            self.map.setRegion(region, animated: true)
+            print(currentPlace)
+        } else {
+            guard currentPlace != -1  else { return }
+            guard places.count > currentPlace else { return }
+            guard let name = places[currentPlace]["name"] else { return }
+            guard let lat = places[currentPlace]["lat"] else { return }
+            guard let lon = places[currentPlace]["lon"] else { return }
+            guard let latitude = Double(lat) else { return }
+            guard let longitude = Double(lon) else { return }
+            let span = MKCoordinateSpan(latitudeDelta: 0.008, longitudeDelta: 0.008)
+            let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+            let region = MKCoordinateRegion(center: coordinate, span: span)
+            self.map.setRegion(region, animated: true)
+            
+            let annotation = MKPointAnnotation()
+            annotation.coordinate = coordinate
+            annotation.title = name
+            self.map.addAnnotation(annotation)
+            print(currentPlace)
+        }
     }
 
 
