@@ -10,6 +10,7 @@ import UIKit
 class ResearchPapersTVC: UITableViewController {
     
     var reports: technicalReports? = nil
+    var curRow = 0
     
     @IBOutlet var theTable: UITableView!
     
@@ -18,7 +19,19 @@ class ResearchPapersTVC: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        performSegue(withIdentifier: "toDetail", sender: nil)
+        curRow = indexPath.row
+        performSegue(withIdentifier: "toDetail", sender: self)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let vc = segue.destination as! ViewController
+        
+        vc.paperTitle = reports?.techreports2[curRow].title ?? "No Title"
+        vc.year = reports?.techreports2[curRow].year ?? "No Year"
+        vc.author = reports?.techreports2[curRow].authors ?? "No Author(s)"
+        vc.email = reports?.techreports2[curRow].email ?? "No Email"
+        vc.abstract = reports?.techreports2[curRow].abstract ?? "No Abstract"
+        vc.url = reports?.techreports2[curRow].pdf
     }
 
     override func viewDidLoad() {
