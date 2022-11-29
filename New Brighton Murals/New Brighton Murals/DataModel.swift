@@ -13,14 +13,14 @@ struct image {
 }
 
 struct muralsData {
-    let id: Int
-    let title: String
-    let artist: String
-    let info: String
-    let thumbnail: URL
-    let lat: Double
-    let lon: Double
-    let enabled: Int
+    let id: String
+    let title: String?
+    let artist: String?
+    let info: String?
+    let thumbnail: String?
+    let lat: Double?
+    let lon: Double?
+    let enabled: String
     let lastModified: Date
     let images: [image]
 }
