@@ -11,6 +11,8 @@ import CoreLocation
 
 class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, MKMapViewDelegate, CLLocationManagerDelegate {
     
+    var murals: muralsData? = nil
+    
     @IBOutlet weak var map: MKMapView!
     
     @IBOutlet weak var table: UITableView!
@@ -20,6 +22,10 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     var locationManager = CLLocationManager()
     var firstRun = true
     var startTrackingUser = false
+    
+    func updateTheTable() {
+        table.reloadData()
+    }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         // Returns an array of locations, generally we want the first one (usually there's only 1 anyway)
@@ -46,7 +52,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             // Following code prevents a zooming bug
             _ = Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: #selector(startUserTracking), userInfo: nil, repeats: false)
         }
-            
+        
         if (startTrackingUser == true) {
             map.setCenter(location, animated: true)
             
@@ -62,14 +68,14 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     // MARK: Table related stuff
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return (murals?.newbrighton_murals.count) ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "tableCell", for: indexPath)
         var content = UIListContentConfiguration.subtitleCell()
-        content.text = "testing"
-        content.secondaryText = "more testing"
+        content.text = murals?.newbrighton_murals[indexPath.row].title ?? "No Title"
+        content.secondaryText = murals?.newbrighton_murals[indexPath.row].artist ?? "No Authors"
         cell.contentConfiguration = content
         return cell
     }
@@ -93,8 +99,33 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         
         // Configures the map to show the user's location (with a blue dot)
         map.showsUserLocation = true
+        
+        
+        if let url = URL(string: "https://cgi.csc.liv.ac.uk/~phil/Teaching/COMP228/nbm/data2.php?class=newbrighton_murals") {
+            let session = URLSession.shared
+            session.dataTask(with: url) { (data, response, err) in
+                guard let jsonData = data else {
+                    return
+                }
+                
+                do {
+                    let decoder = JSONDecoder()
+                    let muralsList = try decoder.decode(muralsData.self, from: jsonData)
+                    self.murals = muralsList
+                    DispatchQueue.main.async {
+                        self.updateTheTable()
+                    }
+                } catch let jsonErr {
+                    print("Error decoding JSON", jsonErr)
+                }
+                
+            }.resume()
+        }
+        
+        
     }
-
-
+    
+    
+    
+    
 }
-

@@ -7,20 +7,24 @@
 
 import Foundation
 
-struct image {
-    let id: Int
+struct image: Decodable {
+    let id: String
     let filename: String
 }
 
-struct muralsData {
+struct singleMural: Decodable {
     let id: String
     let title: String?
     let artist: String?
     let info: String?
     let thumbnail: String?
-    let lat: Double?
-    let lon: Double?
+    let lat: String?
+    let lon: String?
     let enabled: String
-    let lastModified: Date
+    let lastModified: String
     let images: [image]
+}
+
+struct muralsData: Decodable {
+    let newbrighton_murals: [singleMural]
 }
