@@ -54,6 +54,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         
     }
     
+    // This method sets the startTrackingUser bool to true. Once it's true, subsequent calls to didUpdateLocations will cause the map to centre on the user's location.
     @objc func startUserTracking(){
         startTrackingUser = true
     }
@@ -77,15 +78,20 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        // Make this view controller a delegate of the Location Manager, so that it is able to call functions provided in this view controller
         locationManager.delegate = self as CLLocationManagerDelegate
         
+        // Set the level of accuracy for the user's location
         locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
         
+        
+        // Ask the location manager to request authorisation from the user.
         locationManager.requestWhenInUseAuthorization()
         
+        // Once the user's location is being provided then ask for updates when the user moves around
         locationManager.startUpdatingLocation()
         
+        // Configures the map to show the user's location (with a blue dot)
         map.showsUserLocation = true
     }
 
