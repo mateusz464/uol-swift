@@ -10,10 +10,11 @@ import MapKit
 
 class MuralViewController: UIViewController {
     
+    let baseImgURL = "https://cgi.csc.liv.ac.uk/~phil/Teaching/COMP228/nbm_images/"
     var currentTitle: String?
     var artist: String?
     var info: String?
-    var images: [String]?
+    var images: [image]?
     
     
     @IBOutlet weak var titleLabel: UILabel!
@@ -37,7 +38,7 @@ class MuralViewController: UIViewController {
         
         if images != nil {
             var image: UIImage?
-            let urlString = images![0]
+            let urlString = baseImgURL + images![0].filename
             
             let url = NSURL(string: urlString)! as URL
             if let imageData: NSData = NSData(contentsOf: url){

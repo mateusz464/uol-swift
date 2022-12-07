@@ -11,6 +11,7 @@ import CoreLocation
 
 class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, MKMapViewDelegate, CLLocationManagerDelegate {
     
+    var selectedMural = 0
     var murals: muralsData? = nil
     
     @IBOutlet weak var map: MKMapView!
@@ -92,6 +93,19 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         
         cell.contentConfiguration = content
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        selectedMural = indexPath.row
+        performSegue(withIdentifier: "viewMural", sender: self)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let mvc = segue.destination as! MuralViewController
+        mvc.currentTitle = murals?.newbrighton_murals[selectedMural].title
+        mvc.artist = murals?.newbrighton_murals[selectedMural].artist
+        mvc.info = murals?.newbrighton_murals[selectedMural].info
+        mvc.images = murals?.newbrighton_murals[selectedMural].images
     }
     
     // MARK: View related stuff
