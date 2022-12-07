@@ -16,6 +16,7 @@
 		615E3A212936577A00288AA0 /* New_Brighton_Murals.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 615E3A1F2936577A00288AA0 /* New_Brighton_Murals.xcdatamodeld */; };
 		615E3A232936577C00288AA0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 615E3A222936577C00288AA0 /* Assets.xcassets */; };
 		615E3A262936577C00288AA0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 615E3A242936577C00288AA0 /* LaunchScreen.storyboard */; };
+		61DAB3562940D56E00951817 /* MuralViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DAB3552940D56E00951817 /* MuralViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		615E3A222936577C00288AA0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		615E3A252936577C00288AA0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		615E3A272936577C00288AA0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		61DAB3552940D56E00951817 /* MuralViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuralViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +69,7 @@
 				615E3A1A2936577A00288AA0 /* ViewController.swift */,
 				615AE562293661DD00505D06 /* DataModel.swift */,
 				615E3A1C2936577A00288AA0 /* Main.storyboard */,
+				61DAB3552940D56E00951817 /* MuralViewController.swift */,
 				615E3A222936577C00288AA0 /* Assets.xcassets */,
 				615E3A242936577C00288AA0 /* LaunchScreen.storyboard */,
 				615E3A272936577C00288AA0 /* Info.plist */,
@@ -148,6 +151,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				61DAB3562940D56E00951817 /* MuralViewController.swift in Sources */,
 				615AE563293661DD00505D06 /* DataModel.swift in Sources */,
 				615E3A1B2936577A00288AA0 /* ViewController.swift in Sources */,
 				615E3A172936577A00288AA0 /* AppDelegate.swift in Sources */,

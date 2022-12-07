@@ -76,6 +76,20 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         var content = UIListContentConfiguration.subtitleCell()
         content.text = murals?.newbrighton_murals[indexPath.row].title ?? "No Title"
         content.secondaryText = murals?.newbrighton_murals[indexPath.row].artist ?? "No Authors"
+        
+        if (murals?.newbrighton_murals[indexPath.row].thumbnail != nil) {
+            var image: UIImage?
+            let urlString = murals?.newbrighton_murals[indexPath.row].thumbnail
+            
+            let url = NSURL(string: urlString!)! as URL
+            if let imageData: NSData = NSData(contentsOf: url){
+                image = UIImage(data: imageData as Data)
+            }
+            
+            content.image = image
+            
+        }
+        
         cell.contentConfiguration = content
         return cell
     }

@@ -51,11 +51,27 @@
                     <connections>
                         <outlet property="map" destination="CDQ-cQ-Do9" id="Ssk-8r-O9p"/>
                         <outlet property="table" destination="S4N-Pz-acb" id="6NZ-zd-E7r"/>
+                        <segue destination="xZi-Yf-6i2" kind="presentation" identifier="viewMural" id="4ZH-mb-2Kt"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="136.80000000000001" y="3.6945812807881775"/>
+        </scene>
+        <!--Mural View Controller-->
+        <scene sceneID="Fdt-ss-Aaa">
+            <objects>
+                <viewController id="xZi-Yf-6i2" customClass="MuralViewController" customModule="New_Brighton_Murals" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="pyF-QP-8Qf">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="755"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="QLh-5e-NIj"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="NKh-N0-rVg" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="900" y="4"/>
         </scene>
     </scenes>
     <resources>
