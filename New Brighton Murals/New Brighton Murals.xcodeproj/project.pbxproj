@@ -16,6 +16,7 @@
 		615E3A212936577A00288AA0 /* New_Brighton_Murals.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 615E3A1F2936577A00288AA0 /* New_Brighton_Murals.xcdatamodeld */; };
 		615E3A232936577C00288AA0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 615E3A222936577C00288AA0 /* Assets.xcassets */; };
 		615E3A262936577C00288AA0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 615E3A242936577C00288AA0 /* LaunchScreen.storyboard */; };
+		61B742FA294235DC002DF289 /* CustomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61B742F9294235DC002DF289 /* CustomCell.swift */; };
 		61DAB3562940D56E00951817 /* MuralViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DAB3552940D56E00951817 /* MuralViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -31,6 +32,7 @@
 		615E3A222936577C00288AA0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		615E3A252936577C00288AA0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		615E3A272936577C00288AA0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		61B742F9294235DC002DF289 /* CustomCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCell.swift; sourceTree = "<group>"; };
 		61DAB3552940D56E00951817 /* MuralViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuralViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -67,6 +69,7 @@
 				615E3A162936577A00288AA0 /* AppDelegate.swift */,
 				615E3A182936577A00288AA0 /* SceneDelegate.swift */,
 				615E3A1A2936577A00288AA0 /* ViewController.swift */,
+				61B742F9294235DC002DF289 /* CustomCell.swift */,
 				615AE562293661DD00505D06 /* DataModel.swift */,
 				615E3A1C2936577A00288AA0 /* Main.storyboard */,
 				61DAB3552940D56E00951817 /* MuralViewController.swift */,
@@ -156,6 +159,7 @@
 				615E3A1B2936577A00288AA0 /* ViewController.swift in Sources */,
 				615E3A172936577A00288AA0 /* AppDelegate.swift in Sources */,
 				615E3A212936577A00288AA0 /* New_Brighton_Murals.xcdatamodeld in Sources */,
+				61B742FA294235DC002DF289 /* CustomCell.swift in Sources */,
 				615E3A192936577A00288AA0 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

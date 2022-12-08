@@ -10,9 +10,11 @@ import MapKit
 import CoreLocation
 
 class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, MKMapViewDelegate, CLLocationManagerDelegate {
-    
+
+    var favourites: [String] = []
     var selectedMural = 0
     var murals: muralsData? = nil
+    var isData = true
     
     @IBOutlet weak var map: MKMapView!
     
@@ -73,29 +75,63 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "tableCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "tableCell", for: indexPath) as! CustomCell
         var content = UIListContentConfiguration.subtitleCell()
         content.text = murals?.newbrighton_murals[indexPath.row].title ?? "No Title"
         content.secondaryText = murals?.newbrighton_murals[indexPath.row].artist ?? "No Authors"
         
+        let isFav = checkFavourites(id: (murals?.newbrighton_murals[indexPath.row].id)!)
+        
+        if (isFav){
+            let starBtn = UIImage(named: "gold-star.png")
+            let imageView = UIImageView(image: starBtn)
+            cell.accessoryView = imageView
+        }
+        
+//        let starBtn = UIImage(named: "gold-star.png")
+//        let imageView = UIImageView(image: starBtn)
+//        cell.accessoryView = imageView
+        
+//        let starButton = UIButton(type: .system)
+//        starButton.setImage(UIImage(named: "grey_star.png"), for: .normal)
+//        starButton.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
+//        cell.accessoryView = starButton
+        
         if (murals?.newbrighton_murals[indexPath.row].thumbnail != nil) {
             var image: UIImage?
             let urlString = murals?.newbrighton_murals[indexPath.row].thumbnail
-            
+
             let url = NSURL(string: urlString!)! as URL
             if let imageData: NSData = NSData(contentsOf: url){
                 image = UIImage(data: imageData as Data)
             }
-            
+
             content.image = image
-            
         }
+        
+//        if (murals?.newbrighton_murals[indexPath.row].thumbnail != nil) {
+//            var image: UIImage?
+//            let urlString = murals?.newbrighton_murals[indexPath.row].thumbnail
+//            let url = NSURL(string: urlString!)! as URL
+//
+//            URLSession.shared.dataTask(with: url){ (data, response, error) in
+//                if error != nil {
+//                    print(error!)
+//                }
+//
+//                image = UIImage(data: data! as Data)
+//            }
+//
+//            content.image = image
+//
+//        }
         
         cell.contentConfiguration = content
         return cell
     }
-    
+    	
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//        tableView.cellForRow(at: indexPath)?.accessoryType = UITableViewCell.AccessoryType.checkmark
         selectedMural = indexPath.row
         performSegue(withIdentifier: "viewMural", sender: self)
     }
@@ -108,10 +144,57 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         mvc.images = murals?.newbrighton_murals[selectedMural].images
     }
     
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        
+        let favouriteAction = UITableViewRowAction(style: .normal, title: "Favourite") { [self] _, indexPath in
+            let id = (murals?.newbrighton_murals[selectedMural].id)!
+            changeFavourite(id: id)
+        }
+        
+        favouriteAction.backgroundColor = .systemBlue
+        
+        return [favouriteAction]
+    }
+    
+    func checkFavourites(id: String) -> Bool{
+        if favourites.contains(id){
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    func changeFavourite(id: String){
+        if favourites.contains(id) {
+            let newFavs = favourites.filter { $0 != id }
+            favourites = newFavs
+            UserDefaults.standard.set(favourites, forKey: "favArr")
+        } else {
+            favourites.append(id)
+            UserDefaults.standard.set(favourites, forKey: "favArr")
+        }
+        print(id)
+        updateTheTable()
+    }
+    
     // MARK: View related stuff
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let userDefaults = UserDefaults.standard
+        let favData = userDefaults.object(forKey: "favArr")
+        
+        if (favData == nil){
+            isData = false
+        } else {
+            favourites = favData as! [String]
+        }
+        
         // Make this view controller a delegate of the Location Manager, so that it is able to call functions provided in this view controller
         locationManager.delegate = self as CLLocationManagerDelegate
         
