@@ -8,6 +8,34 @@
 import UIKit
 
 class CustomCell: UITableViewCell {
+        
+    @IBOutlet weak var cellImageView: UIImageView!
+    
+    @IBOutlet weak var titleLbl: UILabel!
+    
+    @IBOutlet weak var artistLbl: UILabel!
+    
+    
+    func setImage(urlString: String){
+        
+        let url = NSURL(string: urlString)! as URL
+        
+        let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
+
+            guard
+                let data = data,
+                let newImage = UIImage(data: data) else {
+                print("Couldn't load image from URL")
+                return
+            }
+
+            DispatchQueue.main.async {
+                self.cellImageView.image = newImage
+                print("SET IMAGE")
+            }
+        }
+        task.resume()
+    }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)

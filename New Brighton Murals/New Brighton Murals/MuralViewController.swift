@@ -36,17 +36,36 @@ class MuralViewController: UIViewController {
         artistLabel.text = artist ?? "No Artist"
         infoLabel.text = info ?? "No Info"
         
-        if images != nil {
-            var image: UIImage?
-            let urlString = baseImgURL + images![0].filename
-            
-            let url = NSURL(string: urlString)! as URL
-            if let imageData: NSData = NSData(contentsOf: url){
-                image = UIImage(data: imageData as Data)
+//        if images != nil {
+//            var image: UIImage?
+//            let urlString = baseImgURL + images![0].filename
+//
+//            let url = NSURL(string: urlString)! as URL
+//            if let imageData: NSData = NSData(contentsOf: url){
+//                image = UIImage(data: imageData as Data)
+//            }
+//
+//            imageBox.image = image
+//        }
+        
+        let urlString = baseImgURL + images![0].filename
+        let url = NSURL(string: urlString)! as URL
+        
+        let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
+
+            guard
+                let data = data,
+                let newImage = UIImage(data: data) else {
+                print("Couldn't load image from URL")
+                return
             }
-            
-            imageBox.image = image
+
+            DispatchQueue.main.async {
+                self.imageBox.image = newImage
+                print("SET IMAGE")
+            }
         }
+        task.resume()
         
     }
     

@@ -15,6 +15,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     var selectedMural = 0
     var murals: muralsData? = nil
     var isData = true
+    var muralImage: UIImage?
     
     @IBOutlet weak var map: MKMapView!
     
@@ -76,9 +77,10 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "tableCell", for: indexPath) as! CustomCell
-        var content = UIListContentConfiguration.subtitleCell()
-        content.text = murals?.newbrighton_murals[indexPath.row].title ?? "No Title"
-        content.secondaryText = murals?.newbrighton_murals[indexPath.row].artist ?? "No Authors"
+        cell.titleLbl.text = murals?.newbrighton_murals[indexPath.row].title ?? "No Title"
+        cell.artistLbl.text = murals?.newbrighton_murals[indexPath.row].artist ?? "No Authors"
+        
+        /// Setting favourites using image inside accessory view
         
         let isFav = checkFavourites(id: (murals?.newbrighton_murals[indexPath.row].id)!)
         
@@ -88,9 +90,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             cell.accessoryView = imageView
         }
         
-//        let starBtn = UIImage(named: "gold-star.png")
-//        let imageView = UIImageView(image: starBtn)
-//        cell.accessoryView = imageView
+        /// Setting favourites using buttons (Doesn't work)
         
 //        let starButton = UIButton(type: .system)
 //        starButton.setImage(UIImage(named: "grey_star.png"), for: .normal)
@@ -98,35 +98,11 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
 //        cell.accessoryView = starButton
         
         if (murals?.newbrighton_murals[indexPath.row].thumbnail != nil) {
-            var image: UIImage?
             let urlString = murals?.newbrighton_murals[indexPath.row].thumbnail
-
-            let url = NSURL(string: urlString!)! as URL
-            if let imageData: NSData = NSData(contentsOf: url){
-                image = UIImage(data: imageData as Data)
-            }
-
-            content.image = image
+            
+            cell.setImage(urlString: urlString!)
+            
         }
-        
-//        if (murals?.newbrighton_murals[indexPath.row].thumbnail != nil) {
-//            var image: UIImage?
-//            let urlString = murals?.newbrighton_murals[indexPath.row].thumbnail
-//            let url = NSURL(string: urlString!)! as URL
-//
-//            URLSession.shared.dataTask(with: url){ (data, response, error) in
-//                if error != nil {
-//                    print(error!)
-//                }
-//
-//                image = UIImage(data: data! as Data)
-//            }
-//
-//            content.image = image
-//
-//        }
-        
-        cell.contentConfiguration = content
         return cell
     }
     	
