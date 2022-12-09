@@ -15,7 +15,7 @@ class MuralViewController: UIViewController {
     var artist: String?
     var info: String?
     var images: [image]?
-    
+    var numberOfImg = 0
     
     @IBOutlet weak var titleLabel: UILabel!
     
@@ -28,27 +28,13 @@ class MuralViewController: UIViewController {
     @IBOutlet weak var scOutlet: UISegmentedControl!
     
     @IBAction func scAction(_ sender: Any) {
+        let index = scOutlet.selectedSegmentIndex
+        
+        loadImage(index: index)
     }
     
-    override func viewDidLoad() {
-        
-        titleLabel.text = currentTitle ?? "No Title"
-        artistLabel.text = artist ?? "No Artist"
-        infoLabel.text = info ?? "No Info"
-        
-//        if images != nil {
-//            var image: UIImage?
-//            let urlString = baseImgURL + images![0].filename
-//
-//            let url = NSURL(string: urlString)! as URL
-//            if let imageData: NSData = NSData(contentsOf: url){
-//                image = UIImage(data: imageData as Data)
-//            }
-//
-//            imageBox.image = image
-//        }
-        
-        let urlString = baseImgURL + images![0].filename
+    func loadImage(index: Int){
+        let urlString = baseImgURL + images![index].filename
         let url = NSURL(string: urlString)! as URL
         
         let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
@@ -62,10 +48,34 @@ class MuralViewController: UIViewController {
 
             DispatchQueue.main.async {
                 self.imageBox.image = newImage
-                print("SET IMAGE")
             }
         }
         task.resume()
+    }
+    
+    override func viewDidLoad() {
+        
+        titleLabel.text = currentTitle ?? "No Title"
+        artistLabel.text = artist ?? "No Artist"
+        infoLabel.text = info ?? "No Info"
+        
+        /// If there is only one image, hide the image selector
+        if images != nil {
+            if images!.count == 1 {
+                scOutlet.isHidden = true
+            }
+        }
+        
+        numberOfImg = images?.count ?? 0
+        
+        if numberOfImg > 2 {
+            for x in 3...numberOfImg {
+                scOutlet.insertSegment(withTitle: "Image \(x)", at: x, animated: true)
+            }
+        }
+        
+        /// Loads the image into the ImageView
+        loadImage(index: 0)
         
     }
     

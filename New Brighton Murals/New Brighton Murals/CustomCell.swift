@@ -31,7 +31,6 @@ class CustomCell: UITableViewCell {
 
             DispatchQueue.main.async {
                 self.cellImageView.image = newImage
-                print("SET IMAGE")
             }
         }
         task.resume()

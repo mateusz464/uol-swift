@@ -113,11 +113,11 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="mej-NQ-squ">
-                                <rect key="frame" x="122" y="669" width="131" height="31"/>
+                                <rect key="frame" x="16" y="669" width="343" height="32"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <segments>
-                                    <segment title="First"/>
-                                    <segment title="Second"/>
+                                    <segment title="Image 1"/>
+                                    <segment title="Image 2"/>
                                 </segments>
                                 <connections>
                                     <action selector="scAction:" destination="xZi-Yf-6i2" eventType="valueChanged" id="rwZ-VO-EzI"/>
