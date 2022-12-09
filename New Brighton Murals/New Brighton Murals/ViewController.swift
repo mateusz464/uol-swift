@@ -13,7 +13,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
 
     var favourites: [String] = []
     var selectedMural = 0
-    var murals: muralsData? = nil
+    var murals: muralsData?
     var isData = true
     var muralImage: UIImage?
     
@@ -90,13 +90,6 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             cell.accessoryView = imageView
         }
         
-        /// Setting favourites using buttons (Doesn't work)
-        
-//        let starButton = UIButton(type: .system)
-//        starButton.setImage(UIImage(named: "grey_star.png"), for: .normal)
-//        starButton.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
-//        cell.accessoryView = starButton
-        
         if (murals?.newbrighton_murals[indexPath.row].thumbnail != nil) {
             let urlString = murals?.newbrighton_murals[indexPath.row].thumbnail
             
@@ -159,16 +152,47 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     
     // MARK: View related stuff
     
+    func loadAPIData(){
+        if let url = URL(string: "https://cgi.csc.liv.ac.uk/~phil/Teaching/COMP228/nbm/data2.php?class=newbrighton_murals") {
+            let session = URLSession.shared
+            session.dataTask(with: url) { (data, response, err) in
+                guard let jsonData = data else {
+                    return
+                }
+                
+                do {
+                    let decoder = JSONDecoder()
+                    let muralsList = try decoder.decode(muralsData.self, from: jsonData)
+                    self.murals = muralsList
+                    DispatchQueue.main.async {
+//                        UserDefaults.standard.set(muralsList, forKey: "storedMurals")
+                        self.updateTheTable()
+                    }
+                } catch let jsonErr {
+                    print("Error decoding JSON", jsonErr)
+                }
+                
+            }.resume()
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         let userDefaults = UserDefaults.standard
         let favData = userDefaults.object(forKey: "favArr")
+        let muralData = userDefaults.object(forKey: "storedMurals")
         
         if (favData == nil){
             isData = false
         } else {
             favourites = favData as! [String]
+        }
+        
+        if (muralData == nil) {
+            loadAPIData()
+        } else {
+            murals = muralData as? muralsData
         }
         
         // Make this view controller a delegate of the Location Manager, so that it is able to call functions provided in this view controller
@@ -186,29 +210,6 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         
         // Configures the map to show the user's location (with a blue dot)
         map.showsUserLocation = true
-        
-        
-        if let url = URL(string: "https://cgi.csc.liv.ac.uk/~phil/Teaching/COMP228/nbm/data2.php?class=newbrighton_murals") {
-            let session = URLSession.shared
-            session.dataTask(with: url) { (data, response, err) in
-                guard let jsonData = data else {
-                    return
-                }
-                
-                do {
-                    let decoder = JSONDecoder()
-                    let muralsList = try decoder.decode(muralsData.self, from: jsonData)
-                    self.murals = muralsList
-                    DispatchQueue.main.async {
-                        self.updateTheTable()
-                    }
-                } catch let jsonErr {
-                    print("Error decoding JSON", jsonErr)
-                }
-                
-            }.resume()
-        }
-        
         
     }
     
