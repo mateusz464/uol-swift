@@ -164,8 +164,12 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
                     let decoder = JSONDecoder()
                     let muralsList = try decoder.decode(muralsData.self, from: jsonData)
                     self.murals = muralsList
+                    
+                    let encoder = JSONEncoder()
+                    let data = try encoder.encode(muralsList)
+                    UserDefaults.standard.set(data, forKey: "storedMurals")
+                    
                     DispatchQueue.main.async {
-//                        UserDefaults.standard.set(muralsList, forKey: "storedMurals")
                         self.updateTheTable()
                     }
                 } catch let jsonErr {
@@ -192,7 +196,13 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         if (muralData == nil) {
             loadAPIData()
         } else {
-            murals = muralData as? muralsData
+            do {
+                let decoder = JSONDecoder()
+                let data = try decoder.decode(muralsData.self, from: muralData as! Data)
+                murals = data
+            } catch {
+                print("Unable to Decode Note")
+            }
         }
         
         // Make this view controller a delegate of the Location Manager, so that it is able to call functions provided in this view controller

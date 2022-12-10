@@ -7,12 +7,12 @@
 
 import Foundation
 
-struct image: Decodable {
+struct image: Codable {
     let id: String
     let filename: String
 }
 
-struct singleMural: Decodable {
+struct singleMural: Codable {
     let id: String
     let title: String?
     let artist: String?
@@ -25,6 +25,6 @@ struct singleMural: Decodable {
     let images: [image]
 }
 
-struct muralsData: Decodable {
+struct muralsData: Codable {
     let newbrighton_murals: [singleMural]
 }
