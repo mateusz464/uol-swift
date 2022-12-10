@@ -16,6 +16,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     var murals: muralsData?
     var isData = true
     var muralImage: UIImage?
+    var currentLocation: CLLocation?
     
     @IBOutlet weak var map: MKMapView!
     
@@ -34,6 +35,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         // Returns an array of locations, generally we want the first one (usually there's only 1 anyway)
         let locationOfUser = locations[0]
+        currentLocation = locationOfUser
+        sortMurals()
         let latitude = locationOfUser.coordinate.latitude
         let longitude = locationOfUser.coordinate.longitude
         // Gets the user's location
@@ -77,6 +80,11 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "tableCell", for: indexPath) as! CustomCell
+        
+        if (murals?.newbrighton_murals[indexPath.row].enabled == "0"){
+            cell.isHidden = true
+        }
+        
         cell.titleLbl.text = murals?.newbrighton_murals[indexPath.row].title ?? "No Title"
         cell.artistLbl.text = murals?.newbrighton_murals[indexPath.row].artist ?? "No Authors"
         
@@ -150,6 +158,10 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         updateTheTable()
     }
     
+    func sortMurals(){
+        self.murals?.newbrighton_murals.sort(by: { CLLocation(latitude: Double($0.lat!)!, longitude: Double($0.lon!)!).distance(from: currentLocation!) < CLLocation(latitude: Double($1.lat!)!, longitude: Double($1.lon!)!).distance(from: currentLocation!)})
+    }
+    
     // MARK: View related stuff
     
     func loadAPIData(){
@@ -220,7 +232,6 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         
         // Configures the map to show the user's location (with a blue dot)
         map.showsUserLocation = true
-        
     }
     
     

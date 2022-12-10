@@ -26,5 +26,5 @@ struct singleMural: Codable {
 }
 
 struct muralsData: Codable {
-    let newbrighton_murals: [singleMural]
+    var newbrighton_murals: [singleMural]
 }
