@@ -55,6 +55,18 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             // Make the map show the defined region
             self.map.setRegion(region, animated: true)
             
+            /// Code below adds pins to the map with all the murals but the map zooms in on them rather than current location
+            
+//            for mural in murals!.newbrighton_murals {
+//
+//                let myPin = MKPointAnnotation()
+//
+//                myPin.coordinate = CLLocationCoordinate2D(latitude: Double(mural.lat!)!, longitude: Double(mural.lon!)!)
+//                myPin.title = mural.title
+//
+//                self.map.addAnnotation(myPin)
+//
+//            }
             
             // Following code prevents a zooming bug
             _ = Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: #selector(startUserTracking), userInfo: nil, repeats: false)
@@ -232,6 +244,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         
         // Configures the map to show the user's location (with a blue dot)
         map.showsUserLocation = true
+        
+        
     }
     
     
