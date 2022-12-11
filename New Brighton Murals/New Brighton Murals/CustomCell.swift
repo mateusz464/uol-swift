@@ -15,6 +15,13 @@ class CustomCell: UITableViewCell {
     
     @IBOutlet weak var artistLbl: UILabel!
     
+    @IBOutlet weak var favBtn: UIButton!
+        
+    @IBAction func favBtnPressed(_ sender: Any) {
+        
+        // TODO: MAKE IMAGE CHANGE IF BUTTON HAS BEEN PRESSED
+        
+    }
     
     func setImage(urlString: String){
         
