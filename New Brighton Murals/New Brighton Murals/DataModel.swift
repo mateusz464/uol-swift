@@ -7,12 +7,12 @@
 
 import Foundation
 
-struct image: Codable {
+struct image: Codable, Equatable {
     let id: String
     let filename: String
 }
 
-struct singleMural: Codable {
+struct singleMural: Codable, Equatable {
     let id: String
     let title: String?
     let artist: String?
@@ -25,6 +25,6 @@ struct singleMural: Codable {
     let images: [image]
 }
 
-struct muralsData: Codable {
+struct muralsData: Codable, Equatable {
     var newbrighton_murals: [singleMural]
 }

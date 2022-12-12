@@ -37,7 +37,6 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         let locationOfUser = locations[0]
         currentLocation = locationOfUser
         sortMurals()
-        updateTheTable()
         let latitude = locationOfUser.coordinate.latitude
         let longitude = locationOfUser.coordinate.longitude
         // Gets the user's location
@@ -162,7 +161,14 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     func sortMurals(){
+        
+        let original = self.murals
+        
         self.murals?.newbrighton_murals.sort(by: { CLLocation(latitude: Double($0.lat!)!, longitude: Double($0.lon!)!).distance(from: currentLocation!) < CLLocation(latitude: Double($1.lat!)!, longitude: Double($1.lon!)!).distance(from: currentLocation!)})
+        
+        if original?.newbrighton_murals != self.murals?.newbrighton_murals {
+            updateTheTable()
+        }
     }
     
     func removeNonEnabled(){
@@ -286,7 +292,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         
     }
     
-    
-    
+    @IBAction func unwindSegue(unwindSegue:UIStoryboardSegue){
+        }
     
 }
