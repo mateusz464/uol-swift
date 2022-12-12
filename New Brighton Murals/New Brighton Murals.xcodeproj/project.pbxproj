@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		611B893F294781F200DA8337 /* NewBrightonMuralsWalk.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 611B893E294781F200DA8337 /* NewBrightonMuralsWalk.gpx */; };
 		615AE5612936609100505D06 /* New Brighton.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 615AE5602936609100505D06 /* New Brighton.gpx */; };
 		615AE563293661DD00505D06 /* DataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 615AE562293661DD00505D06 /* DataModel.swift */; };
 		615E3A172936577A00288AA0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 615E3A162936577A00288AA0 /* AppDelegate.swift */; };
@@ -21,6 +22,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		611B893E294781F200DA8337 /* NewBrightonMuralsWalk.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = NewBrightonMuralsWalk.gpx; sourceTree = "<group>"; };
 		615AE5602936609100505D06 /* New Brighton.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "New Brighton.gpx"; sourceTree = "<group>"; };
 		615AE562293661DD00505D06 /* DataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataModel.swift; sourceTree = "<group>"; };
 		615E3A132936577A00288AA0 /* New Brighton Murals.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "New Brighton Murals.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -78,6 +80,7 @@
 				615E3A272936577C00288AA0 /* Info.plist */,
 				615E3A1F2936577A00288AA0 /* New_Brighton_Murals.xcdatamodeld */,
 				615AE5602936609100505D06 /* New Brighton.gpx */,
+				611B893E294781F200DA8337 /* NewBrightonMuralsWalk.gpx */,
 			);
 			path = "New Brighton Murals";
 			sourceTree = "<group>";
@@ -141,6 +144,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				615AE5612936609100505D06 /* New Brighton.gpx in Resources */,
+				611B893F294781F200DA8337 /* NewBrightonMuralsWalk.gpx in Resources */,
 				615E3A262936577C00288AA0 /* LaunchScreen.storyboard in Resources */,
 				615E3A232936577C00288AA0 /* Assets.xcassets in Resources */,
 				615E3A1E2936577A00288AA0 /* Main.storyboard in Resources */,

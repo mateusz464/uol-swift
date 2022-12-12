@@ -37,6 +37,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         let locationOfUser = locations[0]
         currentLocation = locationOfUser
         sortMurals()
+        updateTheTable()
         let latitude = locationOfUser.coordinate.latitude
         let longitude = locationOfUser.coordinate.longitude
         // Gets the user's location
@@ -55,25 +56,13 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             // Make the map show the defined region
             self.map.setRegion(region, animated: true)
             
-            /// Code below adds pins to the map with all the murals but the map zooms in on them rather than current location
-            
-//            for mural in murals!.newbrighton_murals {
-//
-//                let myPin = MKPointAnnotation()
-//
-//                myPin.coordinate = CLLocationCoordinate2D(latitude: Double(mural.lat!)!, longitude: Double(mural.lon!)!)
-//                myPin.title = mural.title
-//
-//                self.map.addAnnotation(myPin)
-//
-//            }
-            
             // Following code prevents a zooming bug
             _ = Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: #selector(startUserTracking), userInfo: nil, repeats: false)
+            
         }
         
-        if (startTrackingUser == true) {
-            map.setCenter(location, animated: true)
+        if (self.startTrackingUser == true) {
+            self.map.setCenter(location, animated: true)
             
         }
         
@@ -81,7 +70,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     
     // This method sets the startTrackingUser bool to true. Once it's true, subsequent calls to didUpdateLocations will cause the map to centre on the user's location.
     @objc func startUserTracking(){
-        startTrackingUser = true
+        self.startTrackingUser = true
     }
     
     // MARK: Table related stuff
@@ -105,9 +94,9 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         let isFav = checkFavourites(id: (murals?.newbrighton_murals[indexPath.row].id)!)
         
         if (isFav){
-            let starBtn = UIImage(named: "gold-star.png")
-            let imageView = UIImageView(image: starBtn)
-            cell.accessoryView = imageView
+            cell.favImg.isHidden = false
+        } else {
+            cell.favImg.isHidden = true
         }
         
         if (murals?.newbrighton_murals[indexPath.row].thumbnail != nil) {
@@ -140,7 +129,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         
         let favouriteAction = UITableViewRowAction(style: .normal, title: "Favourite") { [self] _, indexPath in
-            let id = (murals?.newbrighton_murals[selectedMural].id)!
+            let id = (murals?.newbrighton_murals[indexPath.row].id)!
             changeFavourite(id: id)
         }
         
@@ -151,6 +140,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     
     func checkFavourites(id: String) -> Bool{
         if favourites.contains(id){
+            print("Fav ID: \(id)")
             return true
         } else {
             return false
@@ -158,6 +148,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     func changeFavourite(id: String){
+        print("Checking ID: \(id)")
         if favourites.contains(id) {
             let newFavs = favourites.filter { $0 != id }
             favourites = newFavs
@@ -229,6 +220,18 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             }
         }
         
+        /// Code below adds pins to the map with all the murals but the map zooms in on them rather than current location
+        for mural in murals!.newbrighton_murals {
+
+            let myPin = MKPointAnnotation()
+
+            myPin.coordinate = CLLocationCoordinate2D(latitude: Double(mural.lat!)!, longitude: Double(mural.lon!)!)
+            myPin.title = mural.title
+
+            self.map.addAnnotation(myPin)
+
+        }
+                
         // Make this view controller a delegate of the Location Manager, so that it is able to call functions provided in this view controller
         locationManager.delegate = self as CLLocationManagerDelegate
         
@@ -244,7 +247,6 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         
         // Configures the map to show the user's location (with a blue dot)
         map.showsUserLocation = true
-        
         
     }
     

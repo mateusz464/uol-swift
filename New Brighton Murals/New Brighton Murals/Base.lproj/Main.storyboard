@@ -44,7 +44,7 @@
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ams-jA-1hi">
                                                     <rect key="frame" x="52" y="0.0" width="291" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
@@ -55,21 +55,16 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JK7-jh-Fdm">
-                                                    <rect key="frame" x="299" y="0.0" width="44" height="44"/>
+                                                <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="gold-star" translatesAutoresizingMaskIntoConstraints="NO" id="12G-Re-AW7">
+                                                    <rect key="frame" x="300" y="0.0" width="43" height="43"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <state key="normal" title="Button"/>
-                                                    <buttonConfiguration key="configuration" style="plain" image="grey-star"/>
-                                                    <connections>
-                                                        <action selector="favBtnPressed:" destination="fp3-fX-Ois" eventType="touchUpInside" id="jPc-OL-3IE"/>
-                                                    </connections>
-                                                </button>
+                                                </imageView>
                                             </subviews>
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="artistLbl" destination="tid-ue-903" id="MFv-6o-J24"/>
                                             <outlet property="cellImageView" destination="C0o-yy-PUw" id="Zrc-Ie-dfg"/>
-                                            <outlet property="favBtn" destination="JK7-jh-Fdm" id="nPc-ou-Nm4"/>
+                                            <outlet property="favImg" destination="12G-Re-AW7" id="h9S-tj-YIu"/>
                                             <outlet property="titleLbl" destination="Ams-jA-1hi" id="4wf-Vd-VS4"/>
                                         </connections>
                                     </tableViewCell>
@@ -115,13 +110,6 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Info" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="12" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GGI-Uv-nDS">
-                                <rect key="frame" x="16" y="94" width="343" height="232"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="mej-NQ-squ">
                                 <rect key="frame" x="16" y="669" width="343" height="32"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -137,6 +125,14 @@
                                 <rect key="frame" x="16" y="334" width="343" height="320"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" text="Info" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="7ei-Kc-A8C">
+                                <rect key="frame" x="16" y="87" width="343" height="195"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <color key="textColor" systemColor="labelColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="QLh-5e-NIj"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -144,7 +140,7 @@
                     <connections>
                         <outlet property="artistLabel" destination="gsK-Hs-qfj" id="2cu-G8-d6m"/>
                         <outlet property="imageBox" destination="g7T-xn-Dsy" id="ekQ-tS-pb1"/>
-                        <outlet property="infoLabel" destination="GGI-Uv-nDS" id="etC-b8-rFa"/>
+                        <outlet property="infoTextView" destination="7ei-Kc-A8C" id="o9h-Ht-2mg"/>
                         <outlet property="scOutlet" destination="mej-NQ-squ" id="WQd-Sc-MGT"/>
                         <outlet property="titleLabel" destination="cVR-VB-bob" id="KI6-w5-LLg"/>
                     </connections>
@@ -155,7 +151,10 @@
         </scene>
     </scenes>
     <resources>
-        <image name="grey-star" width="40" height="40"/>
+        <image name="gold-star" width="40" height="40"/>
+        <systemColor name="labelColor">
+            <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

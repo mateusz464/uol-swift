@@ -21,7 +21,7 @@ class MuralViewController: UIViewController {
     
     @IBOutlet weak var artistLabel: UILabel!
     
-    @IBOutlet weak var infoLabel: UILabel!
+    @IBOutlet weak var infoTextView: UITextView!
     
     @IBOutlet weak var imageBox: UIImageView!
     
@@ -57,7 +57,7 @@ class MuralViewController: UIViewController {
         
         titleLabel.text = currentTitle ?? "No Title"
         artistLabel.text = artist ?? "No Artist"
-        infoLabel.text = info ?? "No Info"
+        infoTextView.text = info ?? "No Info"
         
         /// If there is only one image, hide the image selector
         if images != nil {

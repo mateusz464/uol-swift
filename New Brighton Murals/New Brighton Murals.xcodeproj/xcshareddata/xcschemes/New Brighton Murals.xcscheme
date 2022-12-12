@@ -51,7 +51,7 @@
          </BuildableReference>
       </BuildableProductRunnable>
       <LocationScenarioReference
-         identifier = "../../New Brighton Murals/New Brighton.gpx"
+         identifier = "../../New Brighton Murals/NewBrightonMuralsWalk.gpx"
          referenceType = "0">
       </LocationScenarioReference>
    </LaunchAction>
