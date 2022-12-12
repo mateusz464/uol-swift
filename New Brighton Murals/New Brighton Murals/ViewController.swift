@@ -138,9 +138,10 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         return [favouriteAction]
     }
     
+//    MARK: Helper functions
+    
     func checkFavourites(id: String) -> Bool{
         if favourites.contains(id){
-            print("Fav ID: \(id)")
             return true
         } else {
             return false
@@ -148,7 +149,6 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     func changeFavourite(id: String){
-        print("Checking ID: \(id)")
         if favourites.contains(id) {
             let newFavs = favourites.filter { $0 != id }
             favourites = newFavs
@@ -163,6 +163,58 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     
     func sortMurals(){
         self.murals?.newbrighton_murals.sort(by: { CLLocation(latitude: Double($0.lat!)!, longitude: Double($0.lon!)!).distance(from: currentLocation!) < CLLocation(latitude: Double($1.lat!)!, longitude: Double($1.lon!)!).distance(from: currentLocation!)})
+    }
+    
+    func removeNonEnabled(){
+        let countNum = (murals?.newbrighton_murals.count)! - 1
+        var remove: [Int] = []
+        for x in 0...countNum {
+            if murals?.newbrighton_murals[x].enabled == "0" {
+                remove.append(x)
+            }
+        }
+        
+        if remove.count > 0 {
+            for r in remove {
+                murals?.newbrighton_murals.remove(at: r)
+            }
+        }
+    }
+        
+    func saveMuralData(){
+        do {
+            let encoder = JSONEncoder()
+            let data = try encoder.encode(self.murals)
+            UserDefaults.standard.set(data, forKey: "storedMurals")
+        } catch let jsonErr {
+            print("Error encoding data", jsonErr)
+        }
+    }
+    
+    func retrieveMuralData() {
+        let muralData = UserDefaults.standard.object(forKey: "storedMurals")
+        do {
+            let decoder = JSONDecoder()
+            let data = try decoder.decode(muralsData.self, from: muralData as! Data)
+            self.murals = data
+            self.removeNonEnabled()
+        } catch {
+            print("Error decoding data")
+        }
+    }
+    
+    func addMarkers(){
+        /// Code below adds pins to the map with all the murals
+        for mural in self.murals!.newbrighton_murals {
+
+            let myPin = MKPointAnnotation()
+
+            myPin.coordinate = CLLocationCoordinate2D(latitude: Double(mural.lat!)!, longitude: Double(mural.lon!)!)
+            myPin.title = mural.title
+
+            self.map.addAnnotation(myPin)
+
+        }
     }
     
     // MARK: View related stuff
@@ -180,13 +232,14 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
                     let muralsList = try decoder.decode(muralsData.self, from: jsonData)
                     self.murals = muralsList
                     
-                    let encoder = JSONEncoder()
-                    let data = try encoder.encode(muralsList)
-                    UserDefaults.standard.set(data, forKey: "storedMurals")
+                    self.removeNonEnabled()
+                    self.saveMuralData()
+                    self.addMarkers()
                     
                     DispatchQueue.main.async {
                         self.updateTheTable()
                     }
+                    
                 } catch let jsonErr {
                     print("Error decoding JSON", jsonErr)
                 }
@@ -211,25 +264,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         if (muralData == nil) {
             loadAPIData()
         } else {
-            do {
-                let decoder = JSONDecoder()
-                let data = try decoder.decode(muralsData.self, from: muralData as! Data)
-                murals = data
-            } catch {
-                print("Unable to Decode Note")
-            }
-        }
-        
-        /// Code below adds pins to the map with all the murals but the map zooms in on them rather than current location
-        for mural in murals!.newbrighton_murals {
-
-            let myPin = MKPointAnnotation()
-
-            myPin.coordinate = CLLocationCoordinate2D(latitude: Double(mural.lat!)!, longitude: Double(mural.lon!)!)
-            myPin.title = mural.title
-
-            self.map.addAnnotation(myPin)
-
+            retrieveMuralData()
+            self.addMarkers()
         }
                 
         // Make this view controller a delegate of the Location Manager, so that it is able to call functions provided in this view controller
