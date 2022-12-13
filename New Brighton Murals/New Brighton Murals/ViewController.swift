@@ -72,6 +72,12 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         self.startTrackingUser = true
     }
     
+    func mapView(_ mapView: MKMapView, didSelect annotation: MKAnnotation) {
+        let muralIndex = murals?.newbrighton_murals.firstIndex(where: {$0.title == annotation.title})
+        selectedMural = muralIndex!
+        performSegue(withIdentifier: "viewMural", sender: self)
+    }
+    
     // MARK: Table related stuff
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
