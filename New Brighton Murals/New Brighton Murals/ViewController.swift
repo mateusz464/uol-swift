@@ -10,7 +10,7 @@ import MapKit
 import CoreLocation
 
 class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, MKMapViewDelegate, CLLocationManagerDelegate {
-
+    
     var favourites: [String] = []
     var selectedMural = 0
     var murals: muralsData?
@@ -19,7 +19,6 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     var currentLocation: CLLocation?
     
     @IBOutlet weak var map: MKMapView!
-    
     @IBOutlet weak var table: UITableView!
     
     // MARK: Map & Location related stuff
@@ -112,9 +111,9 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         }
         return cell
     }
-    	
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        tableView.cellForRow(at: indexPath)?.accessoryType = UITableViewCell.AccessoryType.checkmark
+        //        tableView.cellForRow(at: indexPath)?.accessoryType = UITableViewCell.AccessoryType.checkmark
         selectedMural = indexPath.row
         performSegue(withIdentifier: "viewMural", sender: self)
     }
@@ -143,7 +142,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         return [favouriteAction]
     }
     
-//    MARK: Helper functions
+    //    MARK: Helper functions
     
     func checkFavourites(id: String) -> Bool{
         if favourites.contains(id){
@@ -162,7 +161,6 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             favourites.append(id)
             UserDefaults.standard.set(favourites, forKey: "favArr")
         }
-        print(id)
         updateTheTable()
     }
     
@@ -192,7 +190,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             }
         }
     }
-        
+    
     func saveMuralData(){
         do {
             let encoder = JSONEncoder()
@@ -218,14 +216,26 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     func addMarkers(){
         /// Code below adds pins to the map with all the murals
         for mural in self.murals!.newbrighton_murals {
-
+            
             let myPin = MKPointAnnotation()
-
+            
             myPin.coordinate = CLLocationCoordinate2D(latitude: Double(mural.lat!)!, longitude: Double(mural.lon!)!)
             myPin.title = mural.title
-
+            
             self.map.addAnnotation(myPin)
-
+            
+        }
+    }
+    
+    func replaceData(newData: muralsData){
+        for i in newData.newbrighton_murals{
+            for j in self.murals!.newbrighton_murals{
+                if i.id == j.id {
+                    let index = self.murals?.newbrighton_murals.firstIndex(of: j)
+                    murals!.newbrighton_murals[index!] = i
+                    print("Replaced data of \(i.id)")
+                }
+            }
         }
     }
     
@@ -260,12 +270,53 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         }
     }
     
+    func loadNewAPIData(lastChecked: String){
+        if let url = URL(string: "https://cgi.csc.liv.ac.uk/~phil/Teaching/COMP228/nbm/data2.php?class=newbrighton_murals&\(lastChecked)") {
+            let session = URLSession.shared
+            session.dataTask(with: url) { (data, response, err) in
+                guard let jsonData = data else {
+                    return
+                }
+                
+                do {
+                    let decoder = JSONDecoder()
+                    let muralsList = try decoder.decode(muralsData.self, from: jsonData)
+                    let newMuralData = muralsList
+                    
+                    self.replaceData(newData: newMuralData)
+                    
+                    self.removeNonEnabled()
+                    self.saveMuralData()
+                    self.addMarkers()
+                    
+                    DispatchQueue.main.async {
+                        self.updateTheTable()
+                    }
+                    
+                } catch let jsonErr {
+                    print("Error decoding JSON", jsonErr)
+                }
+                
+            }.resume()
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let date = Date()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let currentDate = dateFormatter.string(from: date)
         
         let userDefaults = UserDefaults.standard
         let favData = userDefaults.object(forKey: "favArr")
         let muralData = userDefaults.object(forKey: "storedMurals")
+        var lastChecked = userDefaults.object(forKey: "lastModified") as? String
+        
+        if lastChecked == nil {
+            lastChecked = "2022-09-15"
+        }
         
         if (favData == nil){
             isData = false
@@ -275,9 +326,15 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         
         if (muralData == nil) {
             loadAPIData()
+            userDefaults.set(currentDate, forKey: "lastModified")
         } else {
             retrieveMuralData()
             self.addMarkers()
+            
+            if (currentDate != lastChecked){
+                loadNewAPIData(lastChecked: "lastModified=\(lastChecked!)")
+                userDefaults.set(currentDate, forKey: "lastModified")
+            }
         }
                 
         // Make this view controller a delegate of the Location Manager, so that it is able to call functions provided in this view controller
