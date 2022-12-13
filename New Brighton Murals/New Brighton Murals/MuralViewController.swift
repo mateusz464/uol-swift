@@ -18,22 +18,19 @@ class MuralViewController: UIViewController {
     var numberOfImg = 0
     
     @IBOutlet weak var titleLabel: UILabel!
-    
     @IBOutlet weak var artistLabel: UILabel!
-    
     @IBOutlet weak var infoTextView: UITextView!
-    
     @IBOutlet weak var imageBox: UIImageView!
-    
     @IBOutlet weak var scOutlet: UISegmentedControl!
     
     @IBAction func scAction(_ sender: Any) {
+        /// If the segmented control is pressed then switch to the image of same index as the button that was pressed
         let index = scOutlet.selectedSegmentIndex
-        
         loadImage(index: index)
     }
     
     func loadImage(index: Int){
+        /// Sets up a URLSession and gets the data from the URL, if there is data then the image retrieved is set as the image in the ImageView
         let urlString = baseImgURL + images![index].filename
         let url = NSURL(string: urlString)! as URL
         
@@ -54,6 +51,8 @@ class MuralViewController: UIViewController {
     }
     
     override func viewDidLoad() {
+        /// Forces dark mode
+        overrideUserInterfaceStyle = .dark
         
         titleLabel.text = currentTitle ?? "No Title"
         artistLabel.text = artist ?? "No Artist"
@@ -68,6 +67,7 @@ class MuralViewController: UIViewController {
         
         numberOfImg = images?.count ?? 0
         
+        /// If there are more than 2 images then add more segments
         if numberOfImg > 2 {
             for x in 3...numberOfImg {
                 scOutlet.insertSegment(withTitle: "Image \(x)", at: x, animated: true)

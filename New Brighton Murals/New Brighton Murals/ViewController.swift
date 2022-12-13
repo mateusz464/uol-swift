@@ -14,7 +14,6 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     var favourites: [String] = []
     var selectedMural = 0
     var murals: muralsData?
-    var isData = true
     var muralImage: UIImage?
     var currentLocation: CLLocation?
     
@@ -32,29 +31,29 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        // Returns an array of locations, generally we want the first one (usually there's only 1 anyway)
+        /// Returns an array of locations, generally we want the first one (usually there's only 1 anyway)
         let locationOfUser = locations[0]
         currentLocation = locationOfUser
         sortMurals()
         let latitude = locationOfUser.coordinate.latitude
         let longitude = locationOfUser.coordinate.longitude
-        // Gets the user's location
+        /// Gets the user's location
         let location = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
         
         if (firstRun) {
             firstRun = false
             let latDelta: CLLocationDegrees = 0.0025
             let lonDelta: CLLocationDegrees = 0.0025
-            // A span defines how large an area is depicted on the map
+            /// A span defines how large an area is depicted on the map
             let span = MKCoordinateSpan(latitudeDelta: latDelta, longitudeDelta: lonDelta)
             
-            // A region defines a centre and a size of area covered
+            /// A region defines a centre and a size of area covered
             let region = MKCoordinateRegion(center: location, span: span)
             
             // Make the map show the defined region
             self.map.setRegion(region, animated: true)
             
-            // Following code prevents a zooming bug
+            /// Following code prevents a zooming bug
             _ = Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: #selector(startUserTracking), userInfo: nil, repeats: false)
             
         }
@@ -66,12 +65,13 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         
     }
     
-    // This method sets the startTrackingUser bool to true. Once it's true, subsequent calls to didUpdateLocations will cause the map to centre on the user's location.
+    /// This method sets the startTrackingUser bool to true. Once it's true, subsequent calls to didUpdateLocations will cause the map to centre on the user's location.
     @objc func startUserTracking(){
         self.startTrackingUser = true
     }
     
     func mapView(_ mapView: MKMapView, didSelect annotation: MKAnnotation) {
+        /// If the user pressed on a pin then it will take the user to the MuralViewController
         let muralIndex = murals?.newbrighton_murals.firstIndex(where: {$0.title == annotation.title})
         selectedMural = muralIndex!
         performSegue(withIdentifier: "viewMural", sender: self)
@@ -80,29 +80,29 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     // MARK: Table related stuff
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        /// Returns the amount of murals or 0 if there are no murals
         return (murals?.newbrighton_murals.count) ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        /// Creates the cell
         let cell = tableView.dequeueReusableCell(withIdentifier: "tableCell", for: indexPath) as! CustomCell
         
-        if (murals?.newbrighton_murals[indexPath.row].enabled == "0"){
-            cell.isHidden = true
-        }
-        
+        /// Sets the text from the mural API data, if there is no data then the preset will be displayed
         cell.titleLbl.text = murals?.newbrighton_murals[indexPath.row].title ?? "No Title"
         cell.artistLbl.text = murals?.newbrighton_murals[indexPath.row].artist ?? "No Authors"
         
-        /// Setting favourites using image inside accessory view
-        
+        /// Receives a bool from the checkFavourites func
         let isFav = checkFavourites(id: (murals?.newbrighton_murals[indexPath.row].id)!)
         
+        /// If isFav is true then the star image will be shown, else it will be hidden
         if (isFav){
             cell.favImg.isHidden = false
         } else {
             cell.favImg.isHidden = true
         }
         
+        /// If there is a thumbnail in the mural API data then set the image as the thumbnail
         if (murals?.newbrighton_murals[indexPath.row].thumbnail != nil) {
             let urlString = murals?.newbrighton_murals[indexPath.row].thumbnail
             
@@ -113,12 +113,13 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //        tableView.cellForRow(at: indexPath)?.accessoryType = UITableViewCell.AccessoryType.checkmark
+        /// If a user presses on a row then it sets selectedMural as that row and then switches to the MuralViewController
         selectedMural = indexPath.row
         performSegue(withIdentifier: "viewMural", sender: self)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        /// Sends the required data from the mural API data to the MuralViewController
         let mvc = segue.destination as! MuralViewController
         mvc.currentTitle = murals?.newbrighton_murals[selectedMural].title
         mvc.artist = murals?.newbrighton_murals[selectedMural].artist
@@ -131,12 +132,13 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-        
+        /// Adds a swipe action, it allows the user to swipe a cell and press the favourite button which will mark the mural as a favourite
         let favouriteAction = UITableViewRowAction(style: .normal, title: "Favourite") { [self] _, indexPath in
             let id = (murals?.newbrighton_murals[indexPath.row].id)!
             changeFavourite(id: id)
         }
         
+        /// Makes the button blue
         favouriteAction.backgroundColor = .systemBlue
         
         return [favouriteAction]
@@ -145,6 +147,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     //    MARK: Helper functions
     
     func checkFavourites(id: String) -> Bool{
+        /// Checks if the ID provided is in the favourites array
         if favourites.contains(id){
             return true
         } else {
@@ -153,6 +156,9 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     func changeFavourite(id: String){
+        /// Acts as a switch, if the ID is in the array it removes it from the array
+        /// If the ID is not in the array then it gets appended to it
+        /// After the action, the array gets saved in userDefaults and the table gets updated
         if favourites.contains(id) {
             let newFavs = favourites.filter { $0 != id }
             favourites = newFavs
@@ -165,7 +171,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     func sortMurals(){
-        
+        /// Sorts the table based off the new location
+        /// Then, it checks if the array was sorted (if anything got changed), if it did then it updates the table
         let original = self.murals
         
         self.murals?.newbrighton_murals.sort(by: { CLLocation(latitude: Double($0.lat!)!, longitude: Double($0.lon!)!).distance(from: currentLocation!) < CLLocation(latitude: Double($1.lat!)!, longitude: Double($1.lon!)!).distance(from: currentLocation!)})
@@ -176,6 +183,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     func removeNonEnabled(){
+        /// For each mural in the muralData it checks if the enabled is 0, if it is then the index gets appended to the remove array
+        /// It then checks if anything got appended to the remove array, if it did then it will remove all the murals which indexes are in the remove array
         let countNum = (murals?.newbrighton_murals.count)! - 1
         var remove: [Int] = []
         for x in 0...countNum {
@@ -192,6 +201,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     func saveMuralData(){
+        /// Encodes the data and then stores it in core data
         do {
             let encoder = JSONEncoder()
             let data = try encoder.encode(self.murals)
@@ -202,6 +212,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     func retrieveMuralData() {
+        /// Retrieves the data from core data and then decodes it back into the muralsData datatype
+        /// Then proceeds to call the removeNonEnabled function
         let muralData = UserDefaults.standard.object(forKey: "storedMurals")
         do {
             let decoder = JSONDecoder()
@@ -214,11 +226,10 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     func addMarkers(){
-        /// Code below adds pins to the map with all the murals
+        /// Adds pins to the map for every mural
         for mural in self.murals!.newbrighton_murals {
             
             let myPin = MKPointAnnotation()
-            
             myPin.coordinate = CLLocationCoordinate2D(latitude: Double(mural.lat!)!, longitude: Double(mural.lon!)!)
             myPin.title = mural.title
             
@@ -228,6 +239,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     func replaceData(newData: muralsData){
+        /// For every mural in the provided 'newData' it checks every mural in the current murals and compares if the ID is the same,
+        /// If the ID is the same then it replaces the data with the new updated data
         for i in newData.newbrighton_murals{
             for j in self.murals!.newbrighton_murals{
                 if i.id == j.id {
@@ -242,6 +255,9 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     // MARK: View related stuff
     
     func loadAPIData(){
+        /// Sets up a URL session and retrieves the data from the URL
+        /// If the data is there then it decodes it and appends it to murals
+        /// It then runs the helper functions and updates the table
         if let url = URL(string: "https://cgi.csc.liv.ac.uk/~phil/Teaching/COMP228/nbm/data2.php?class=newbrighton_murals") {
             let session = URLSession.shared
             session.dataTask(with: url) { (data, response, err) in
@@ -271,6 +287,9 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     func loadNewAPIData(lastChecked: String){
+        /// Sets up a URL session and retrieves the data from the URL, however, it only retrieves the NEW data
+        /// If the data is there then it decodes it and appends it to murals
+        /// It then runs the helper functions and updates the table
         if let url = URL(string: "https://cgi.csc.liv.ac.uk/~phil/Teaching/COMP228/nbm/data2.php?class=newbrighton_murals&\(lastChecked)") {
             let session = URLSession.shared
             session.dataTask(with: url) { (data, response, err) in
@@ -303,27 +322,34 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        /// Forces dark mode
+        overrideUserInterfaceStyle = .dark
         
+        /// Gets the current date in YYYY-MM-DD format
         let date = Date()
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         let currentDate = dateFormatter.string(from: date)
         
+        /// Retrieves the data for favourites, murals and lastChecked from core data
         let userDefaults = UserDefaults.standard
         let favData = userDefaults.object(forKey: "favArr")
         let muralData = userDefaults.object(forKey: "storedMurals")
         var lastChecked = userDefaults.object(forKey: "lastModified") as? String
         
+        /// If lastChecked if non-existant then set it to a set date - this stops the program crashing in case the data somehow goes missing
         if lastChecked == nil {
             lastChecked = "2022-09-15"
         }
         
-        if (favData == nil){
-            isData = false
-        } else {
+        /// If there is favouriteData then it gets set as favourites array
+        if (favData != nil){
             favourites = favData as! [String]
         }
         
+        /// If the muralData is empty then the loadAPIData function will get called to get the data from the API and then it's saved into core data
+        /// If there is data then the retrieveMuralData function is called to get the data from core data, then addMarkers function to add markers
+        /// Then it checks if the currentDate is different from the lastChecked date, if the data is different then it will check the API if there is any new data, then the current date is saved in core data
         if (muralData == nil) {
             loadAPIData()
             userDefaults.set(currentDate, forKey: "lastModified")
@@ -355,7 +381,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         
     }
     
+    /// Ability to unwind the segue
     @IBAction func unwindSegue(unwindSegue:UIStoryboardSegue){
-        }
+    }
     
 }
