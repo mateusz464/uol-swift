@@ -8,21 +8,22 @@
 import UIKit
 
 class DetailViewController: UIViewController {
-
     
     @IBOutlet weak var viewLabel: UILabel!
-    
     @IBOutlet weak var roomLabel: UILabel!
-    
     @IBOutlet weak var emailLabel: UILabel!
+    
+    var personName: String = ""
+    var room: String = ""
+    var email: String = ""
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        viewLabel.text = selectedPerson.0
-        roomLabel.text = selectedPerson.1
-        emailLabel.text = selectedPerson.2
+        viewLabel.text = personName
+        roomLabel.text = room
+        emailLabel.text = email
 
         // Do any additional setup after loading the view.
     }

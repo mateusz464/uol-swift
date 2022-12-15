@@ -7,11 +7,11 @@
 
 import UIKit
 
-var selectedPerson = ("", "", "")
-
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
-    let staff = [("Phil","A1.20","phil@liverpool.ac.uk"),("Terry","A2.18","trp@liverpool.ac.uk"),("Valli","A2.12","V.Tamma@liverpool.ac.uk"),("Boris","A1.15","Konev@liverpool.ac.uk")]
+    var selectedPerson = ("", "", "")
+    
+    var staff = [("Phil","A1.20","phil@liverpool.ac.uk"),("Terry","A2.18","trp@liverpool.ac.uk"),("Valli","A2.12","V.Tamma@liverpool.ac.uk"),("Boris","A1.15","Konev@liverpool.ac.uk")]
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return staff.count
@@ -27,10 +27,26 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         return cell
     }
     
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            staff.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .fade)
+        }
+    }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
         selectedPerson = staff[indexPath.row]
         performSegue(withIdentifier: "toDetail", sender: nil)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let vc = segue.destination as! DetailViewController
+        vc.personName = selectedPerson.0
+        vc.room = selectedPerson.1
+        vc.email = selectedPerson.2
+    }
+    
+    @IBAction func unwindSegue(unwindSegue:UIStoryboardSegue){
     }
 
     override func viewDidLoad() {
