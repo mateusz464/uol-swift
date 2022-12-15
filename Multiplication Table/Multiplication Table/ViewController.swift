@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource{
+class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate{
     
     var userNum : Int?
     
@@ -46,6 +46,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         return aCell
     }
     
+    // Rejects any non-numeric input values
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let allowedCharacters = CharacterSet.decimalDigits
+        let characterSet = CharacterSet(charactersIn: string)
+        return allowedCharacters.isSuperset(of: characterSet)
+    }
+
+    
     @IBAction func goBtn(_ sender: Any) {
         userNum = Int(numberField.text!)
         multTable.reloadData()
@@ -56,6 +64,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        numberField.delegate = self
         // Do any additional setup after loading the view.
     }
 
